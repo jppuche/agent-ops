@@ -1,0 +1,19 @@
+# SCRATCHPAD - [PROJECT_NAME]
+
+Session log. Append-only during the day. Keep under 150 lines.
+
+When it grows, graduate repeated patterns (3+ times) to `lessons-learned.md` and archive the rest. Old blocks consolidate into `status.md` (state) and `lessons-learned.md` (validated patterns).
+
+---
+
+## YYYY-MM-DD -- initial bootstrap
+
+Project bootstrapped from the agent-ops kit. Pending:
+
+1. Fill the TODOs in `CLAUDE.md`.
+2. Define the first unit of work in `status.md` (Active work).
+3. If a domain layer applies, build out its folders and their READMEs.
+
+[agent: Claude - bootstrap]
+
+---

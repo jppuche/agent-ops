@@ -1,0 +1,137 @@
+---
+doc_type: lessons
+purpose: Validated cross-project patterns + post-mortems; consult before acting on a comparable situation.
+audience: [agents, humans]
+when_to_use:
+  - When a pattern repeats and might graduate to a rule
+  - Before a decision a prior lesson already informs
+maintenance: append-only
+---
+
+# Lessons Learned
+
+Validated patterns and post-mortems. Append-only. Two sections:
+
+1. **Seed patterns** (below): universal, method-level lessons that ship with the kit. Applicable unless proven otherwise.
+2. **Project lessons**: emerge from work on this project (graduate after 3+ repetitions or significant impact).
+
+Format for each entry:
+- **Rule in one line**
+  - **Why**: context / incident that originated it
+  - **Apply when**: concrete trigger in future sessions
+
+---
+
+# Seed patterns (universal)
+
+## Verification
+
+- **Sub-agents hallucinate quantitative AND qualitative findings - verify ALL that affect decisions**
+  - **Why**: the "cite file+line" rule reduces hallucination but does not eliminate it. Sub-agents assert wrong counts and false content while citing a correct locator, with confidence.
+  - **Apply when**: a sub-agent report will be used to decide scope. Verify with your own grep EVERY finding that drives a decision. Treat the report as hypothesis, not fact.
+
+- **Empirical > narrative: separate PROVEN from INFERRED**
+  - **Why**: a hypothesis from a stakeholder narrative can be refuted repeatedly before the real cause surfaces. If docs already say "confirmed: <first hypothesis>", they have to be walked back.
+  - **Apply when**: documenting a root cause or conclusion. Mark hypotheses as hypotheses (with what would falsify them); reserve "proven/confirmed" for what a query or file:line verifies.
+
+- **"Trust but verify" includes the orchestrator's OWN hypotheses, not just the sub-agents'**
+  - **Why**: the costliest bias is often the orchestrator's own inference, taken from the narrative and propagated to docs as fact.
+  - **Apply when**: forming a root-cause hypothesis. Seek the datum that would FALSIFY it, not only the one that confirms it, before propagating it.
+
+- **Convergence != evidence**
+  - **Why**: N converging clues do not raise a claim to HIGH without a DIRECT_FETCH of the specific item, or an explicit independence test. Count genuinely independent axes, not correlated ones.
+  - **Apply when**: tempted to raise confidence because multiple signals agree. A domain with >= 2 candidates is not resolved by N correlated clues.
+
+- **Control case to FALSIFY a hypothesis (not only to confirm it)**
+  - **Why**: a hypothesis compatible with a single case's data is not tested by that case. A case in a DIFFERENT state can falsify it.
+  - **Apply when**: "X is the cause" fits the one case you have. Find a case in a different state/period/entity that would falsify it if false.
+
+- **ROOT PATTERN - a claim read off structure is a hypothesis until the data or the reference frame is checked**
+  - **Why**: a field case, four errors in one session with one cause: a filter sweep that matched only some condition types and missed a saved range hiding part of the data; two elements identical in position assumed interchangeable when only one carried a cross-page link; a lint warning dismissed by measuring against the wrong container; a grouping level recommended without counting its distinct values. In every case the file was read correctly and the conclusion was still wrong - structure was treated as meaning.
+  - **Apply when**: about to state what a system *does* from what its files *say*. Ask: what would the data have to look like for this to be true, and against which reference frame is this measured? Both are usually one query or one grep away.
+
+- **ROOT PATTERN, second family - a copy is not its source: re-read the primary before you assert from a summary, a paraphrase, a cached context, a check's output or a label**
+  - **Why**: seven errors in one kit session shared one mechanism - a derived copy stood in for the thing itself: vendor-page summaries filed under `[DOCS]` tags; a prompt's paraphrase of an approval that led a reviewer to the opposite verdict; a subagent arguing from the parent's startup copy of a doc already changed on disk; "no reviewer caught it" said from memory when the filed outputs showed two had; a line-ending check that could not fail; a partial count read as the total; an account name read as a person's identity.
+  - **Apply when**: about to state something you did not just read at its source. Re-read the primary: the page raw, the ledger row, the file from disk, the bytes, the person. If it cannot be re-read, say the claim is second-hand.
+
+- **A source tag records where a sentence came from, not whether it was read correctly - read vendor pages raw, or quote them**
+  - **Why**: an independent audit found three HIGH defects in a kit, all the same: WebFetch's summarizing model paraphrased a page and the paraphrase was recorded as the source's words ("half the vulnerabilities were found outside the core directories" became "half the findings were false"; "15x more tokens than chats" became "10-15x a single agent"; a settings key `effortLevel` came back as `effort`, which is silently ignored). Each survived the author's review because the tag vouched for it. It recurred: a summary invented a `_FORCE` condition on an env var; the raw page had none.
+  - **Apply when**: recording any fact from a fetched page that someone will act on - a number, a key name, a quoted rule. Fetch the raw `.md` (`curl`) or ask for the verbatim sentence, quote it, then tag it. A summary is a lead, never a source.
+
+- **Exact data only through a deterministic channel**
+  - **Why**: 10 of 10 sha256 digests extracted via WebFetch from a package index were plausible-looking wrong hex, and the agent's "2 of 3 queries agree" was agreement between hallucinations of the same channel (a field case). Caught by the orchestrator's `curl` + parser check.
+  - **Apply when**: the value is byte-exact (hash, key, id, settings name, many-digit number). Get it with `curl`/an API plus a local parser or a native tool; verify it through an independent deterministic channel, not by re-asking the same one.
+
+- **An inference inherits the tag of the data it was drawn from unless you tag it separately - and the inference is usually the part that is wrong**
+  - **Why**: correct vendor figures carried a `[DOCS]` tag, and the author's conclusion drawn from them ("migrated workflows silently drop a notch") sat in the same sentence under the same tag. Every figure was right; the conclusion was wrong, and nothing flagged it. A re-read the same day found four more inferences wearing a source tag.
+  - **Apply when**: a sentence cites a source and then says what it *means* ("so", "which means", a consequence stated as fact). Split it: the fact carries the source's tag, the consequence carries `INFERRED`.
+
+- **Verify a sub-agent's attribution, not only its claim - a true finding can carry an invented provenance**
+  - **Why**: a coherence agent reported a real contradiction, both citations correct, but framed it as caused by material written that session; `git show` proved the line pre-dated the session by months. Verifying the claim alone would have filed a self-inflicted regression instead of a pre-existing finding - they route differently.
+  - **Apply when**: any finding that assigns blame, novelty or a date ("this is new", "your change broke"). Check the claim with a grep and the attribution with `git log` / `git show`.
+
+- **The verification test is independence: could this step fail independently of the first pass?**
+  - **Why**: "consult a new source" was the wrong test - a fresh reviewer re-reading the same code fails it yet is needed; checking against a design doc derived from the same code by the same author passes it yet is waste (an independent audit).
+  - **Apply when**: adding or cutting a verification step. Keep it if it uses a different source or a different reasoner (a cold reviewer); cut "double-check your work" boilerplate. Full reasoning: `system/model-playbook.md` section 5.
+
+- **Check the `falsified_by` field before acting on a finding**
+  - **Why**: a vision reviewer reported a whole table rendering at 1.05:1 contrast, "unreadable", and honestly wrote the falsifier - "re-capture after the visual finishes its query". A fresh capture measured the same text at 18:1; the first capture had caught the visual mid-query fade-in. Acting on the finding would have meant hunting a colour bug that did not exist.
+  - **Apply when**: a finding would drive a change - above all vision findings about colour, contrast, blank or "missing" content, which capture timing produces. Run its `falsified_by` first; a finding whose falsifier fires is discarded, however confident it sounded.
+
+- **A check that cannot fail is not a check**
+  - **Why**: `grep -c $'\r$'` in the Git Bash tool reported every line of an LF file as CRLF; a file was "fixed" on its word.
+  - **Apply when**: trusting any new verification command. Make it fail once on an input you know is wrong. For line endings use `file <path>` or a byte count.
+
+## Process
+
+- **A subagent's return is a report, not proof of completion**
+  - **Why**: current models end long tasks with status notes, and a subagent cannot ask anyone anything, so a "check-in" arrives as its final answer - a partial result shaped like a finished one.
+  - **Apply when**: receiving any agent output. No fixed closing lines (`CHECKED:` / `NOT CHECKED:`) -> resume the agent with `SendMessage` (a role on `haiku` that is refused, or still unclosed after the hook's sends-back, is re-dispatched fresh on a stronger model instead); also compare `CHECKED:` with the scope you dispatched.
+
+- **Pin `model` and `effort` in every recurring agent role; start at the model's default effort**
+  - **Why**: a subagent without `effort:` inherits the session's level - a general-purpose web sweep spawned from a `max` session ran 25 minutes and ~443k tokens. Measured A/B runs found the default effort sufficient for an adversarial review and a blind screen transcription.
+  - **Apply when**: writing or dispatching an agent. Use the checked-in roles; raise effort only where a measurement shows a gain. Model versions live only in `system/model-playbook.md`.
+
+- **Two live sessions on one working tree: agree file ownership by message, write shared docs only after the other session's commit lands, stage by path**
+  - **Why**: two sessions edited the same `docs/*` concurrently on two days. On the first day one session committed only its own lines by building "HEAD + my lines" blobs - correct, but slow and easy to get wrong. On the second, agreeing paths by message, holding shared-doc edits until the other's commit hash arrived, and comparing `git diff --cached --numstat` with one's own edits avoided any collision.
+  - **Apply when**: another session is live on the same repo. Send it the paths you will touch; stay off its paths until it commits; confirm the staged numstat matches your edits before committing.
+
+- **Write prose with Write/Edit, not shell redirects or long heredocs**
+  - **Why**: `cat >>` appended past a file's section skeleton silently, and a long markdown heredoc died with `unexpected EOF` in the Bash tool while Write took the same content first try (it recurred).
+  - **Apply when**: writing or extending any prose file. Write for new files, Edit for existing ones; heredocs only for short scripts. Note: Write emits LF even over a CRLF file, and Edit drops a trailing space at the end of `new_string` - extend the edit to the next non-space character when whitespace matters.
+
+- **A PowerShell 5.1 hook must read stdin as UTF-8 and write without a BOM - explicitly, both ways**
+  - **Why**: the prompt-capture hook read its JSON with `[Console]::In` (OEM code page) and wrote with `Add-Content -Encoding utf8` (BOM on file creation): every non-ASCII character in 40 of 64 records was corrupted and record 1 failed strict JSON parsing. No error was raised.
+  - **Apply when**: writing any script that reads hook input or writes a file other tools parse. Read with `New-Object System.IO.StreamReader([Console]::OpenStandardInput(), (New-Object System.Text.UTF8Encoding $false))`, write with `[System.IO.File]::AppendAllText(path, text, (New-Object System.Text.UTF8Encoding $false))`. Test with accented text - ASCII survives every wrong encoding.
+
+- **Human-executes / agent-verifies for production changes where the agent is read-only on the substrate**
+  - **Why**: when the agent must not mutate a live database or server (policy, or withheld access), splitting execution (human) from verification (agent, by reading) makes it safe to touch production, with a human hand on every irreversible step. In a field case the agent produced a runbook, the human ran each block, the agent verified at checkpoints A (no-regression against a backup) and B (row-by-row against the source of truth) before advancing.
+  - **Apply when**: a production change where the agent is read-only. Produce a runbook, not a script; gate each step on a checkpoint; back up before the first mutating step; verify your own check queries too (a buggy check fabricates false negatives). Pattern: `system/agent-orchestration.md` sec 7.
+
+- **Sample spot-checks from the universe the consumer actually sees, not from the raw source**
+  - **Why**: a report or system usually shows a filtered subset (certain categories, states, periods). A sample picked from the unfiltered source can land on a row the consumer never sees, so the "mismatch" is only scope (a field case: a filtered model checked against its raw source table).
+  - **Apply when**: choosing individual rows to spot-check an output. Derive the sample with the same filter the consuming layer applies, not with an unfiltered query on the source.
+
+- **Migrating a fragile derivation: keep the OLD logic verbatim as the fallback, do not port it**
+  - **Why**: rewriting a trusted derivation risks silently reclassifying history on any behavioural delta. Wrapping the old expression, unchanged, as the fallback branch of the new rule (the `ELSE`) makes history identical by construction (a field case).
+  - **Apply when**: changing how a classification or derivation is computed and someone relies on its historical output. The new rule wins where it applies; the old logic runs verbatim everywhere else. Set the cutoff from an adoption count over the data, not from the narrative.
+
+- **Verify before negating**
+  - **Why**: an unverified "no" ("X doesn't exist", "I can't") is as costly as an unverified "yes".
+  - **Apply when**: about to state a limitation or absence. Check first (grep, read, a query).
+
+- **Source-first for fast-moving tools**
+  - **Why**: tool ecosystems (MCPs, plugins, platform features, APIs) change faster than the model trains. Model knowledge is a stale hypothesis, valid to direct the search, not as evidence.
+  - **Apply when**: designing on, evaluating, or instructing the exact behavior of a tool (impact >= MEDIUM). Read its current docs first.
+
+- **Hooks enforce, docs advise**
+  - **Why**: advisory rules fail under task pressure; the human is often the only gate that fires. A behavior that must happen every time needs a hook.
+  - **Apply when**: a rule MUST hold every time (block a command, gate a commit, carry a prefix). Reach for a hook, not another paragraph.
+
+---
+
+# Project lessons
+
+## (category)
+
+(no entries - add when a pattern is validated in this project)

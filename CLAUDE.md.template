@@ -1,0 +1,122 @@
+# [PROJECT_NAME]
+
+[One line: what this project does, which decision or output it serves, who consumes it]. Stakeholder: [Name, role].
+[DOMAIN_LINE]
+Project type: [PROJECT_TYPE] (build | research | advisory; it picks the starting defaults in `system/agent-orchestration.md` sec 7).
+
+## Project state
+
+@docs/status.md
+
+## Structure
+
+```
+CLAUDE.md                          this file (auto-loaded); routing table below
+system/                            agnostic methodology - does NOT change per project
+  agent-orchestration.md           dispatch 2x2 + multi-agent primitives + role library + verification gate
+  model-playbook.md                which model + effort per job (decisions); with model-measurements.md
+                                   (the evidence), the only files naming model versions
+  verification-contract.md         review-agent contract (locator + provenance + falsified_by)
+  cross-validation-prompt.md       sub-agent review gate template (medium+ risk changes)
+  claude-md-guide.md               how to maintain this CLAUDE.md
+  templates/research-template.md   output schema + Research Prompt Prefix for fan-outs
+  templates/parallel-sessions-protocol.md  protocol for sessions that coordinate (instantiate when used)
+  scripts/                         hooks: doc health, prompt capture, subagent usage log, closing-line gate
+.claude/agents/                    checked-in roles, model + effort pinned: fidelity-verifier, domain-analyst,
+                                   adversarial-reviewer (the 3 gate roles), web-researcher, extractor (bulk
+                                   extract / list); a build-tier project also has executor and operator
+                                   (a core project that needs one copies it from the kit's agents/)
+docs/                              living governance - edited as you work
+  status.md (auto-loaded)  scratchpad.md  lessons-learned.md   <- read at session start
+  decisions.md  dev-changelog.md
+  cerebrate-log/                   lossless session reflections
+[DOMAIN_STRUCTURE]
+```
+
+## Routing - intent -> doc
+
+| When you need to... | Read |
+|---|---|
+| Choose or re-check how the work is organized (one session, subagents, parallel sessions, a workflow, the advisor) | `system/agent-orchestration.md` sec 2 (*When to evaluate*) + sec 6 |
+| Delegate anything (subagent, fan-out, verification gate) | skill `agent-dispatch`, then `system/agent-orchestration.md` sec 2 + 6 |
+| Pick the model or effort level for a task or agent | `system/model-playbook.md` |
+| Decide whether the main session runs on `opus` or `fable`, or whether to consult the advisor | `system/model-playbook.md` sec 2 + 8, within the Environment block below |
+| Run parallel sessions that message each other (same or other machines) | `system/agent-orchestration.md` sec 6 *Parallel sessions* + `system/templates/parallel-sessions-protocol.md` |
+| Fan-out multi-agent research | `system/agent-orchestration.md` sec 4-5 + `system/templates/research-template.md` |
+| Review a plan / code / artifact with agents | `system/verification-contract.md` (+ `.claude/agents/` gate roles) |
+| Validate a produced artifact with a role team (rounds) | `system/agent-orchestration.md` sec 7 (role library + round structure) |
+| Run a cross-validation gate (medium+ risk change) | `system/cross-validation-prompt.md` |
+| A validated pattern before acting | `docs/lessons-learned.md` |
+| Why was X decided | `docs/decisions.md` |
+| What happened on date Y | `docs/dev-changelog.md` |
+| Maintain this CLAUDE.md | `system/claude-md-guide.md` |
+[DOMAIN_ROUTING]
+
+## Rules
+
+- **Critical advisor, not a compliant assistant.** Flag omissions, surface tradeoffs, present the less flattering read. If the stakeholder (or your own earlier conclusion) is wrong, say so with evidence and an alternative
+- **Verify before negating**: before saying "X doesn't exist" or "I can't", check first (grep, read, a query). An unverified "no" is as costly as an unverified "yes"
+- **Self-verification**: build a check (grep, smoke test, spot-check, sub-agent) when a change has downstream impact. Structural changes, deletions, and claims that drive decisions get verified; not everything does
+- **PROVEN vs INFERRED**: in docs (status, decisions, notes) mark hypotheses as such; reserve "confirmed/proven" for what a query or `file:line` verifies. A stakeholder narrative is a hypothesis until validated - trust-but-verify applies to your OWN inferences, not only sub-agents'. A source tag covers the fact, not the conclusion you drew from it - tag that `INFERRED`. A copy is not its source (a summary, a prompt's paraphrase, your cached context, a check's output): re-read the primary before asserting
+- **Debug from a hypothesis**: on a bug, state what you think is wrong and where before changing anything, reproduce it, and fix the root cause, not the symptom. Several changes made without a hypothesis hide which one worked
+- **Source-first for fast-moving tools**: MCPs, plugins, platform features and APIs change faster than the model trains. Before designing on, evaluating, or instructing an exact behavior of a tool (impact >= MEDIUM), read its current official docs. "Would I bet $100 this hasn't changed since training?" If no, fetch first. Model knowledge is a hypothesis that DIRECTS the search, not evidence
+- **Built-in doubt**: before acting on persisted info (docs, memory, rules) for a decision with impact >= MEDIUM, verify declared assumptions still hold and assess staleness by date/context. When building a plan, declare starting assumptions; when evidence contradicts an active one, course-correct and say so
+- **Orchestrator integrates; agents produce**: any vehicle (subagents, team, workflow) only produces findings. Synthesis with the whole-project view and the application of corrections stay with the main session, in a step separate from production. Never let a review agent edit the artifact it reviews
+- **Search the codebase before creating anything new.** Review applicable skills before a task
+- **Hooks enforce, docs advise**: a behavior that MUST happen every time (block a command, gate a commit, carry the research prefix) is a hook, not another paragraph. Knowing a rule is not doing it under pressure
+
+## Working configuration
+
+How this project gets its work done is a decision, recorded under *Working configuration* in `docs/status.md`. Propose one when the project or a new workstream starts, with the reason and what it costs against the alternative; "one session, no agents" is a valid answer. Re-check it only on the events in `system/agent-orchestration.md` sec 2 (a plan larger than one session or with a costly-to-undo step about to run, an assumption that broke, an irreversible action next, two failed attempts, a compacted or nearly full context, the close of a block). When the configuration still fits, say nothing about it - except before an irreversible or outward-facing action whose gate has not run: always say that. The default answer is one session; this section asks a question, it does not ask for delegation.
+
+## Environment (what this project may spend and use)
+
+Edit these lines to fit where the project runs. An option this block rules out stays documented in `system/`: recommend it to the stakeholder as something another environment allows, and do not enable it here.
+
+- **Billing**: the subscription plan's included limits only. Nothing that bills usage credits or API tokens runs without the stakeholder's go-ahead for that specific use
+- **Advisor** (`/advisor`): allowed only where it draws on the plan's limits. A Fable advisor is ruled out while the `/model` picker marks the Fable row "Requires usage credits". You cannot see that picker: ask the stakeholder once and write the answer on this line
+- **Fast mode, cloud sessions, scheduled cloud agents**: ask first (they bill or run outside this machine)
+- **Large fan-outs** (a workflow, an agent team, ultracode): say what it would cost against the plan's limits and get a go-ahead before starting one
+
+## Docs routing (when asked to "update docs" / "checkpoint")
+
+- Changes project STATE? -> **docs/status.md**
+- Today's discovery that may not repeat? -> **docs/scratchpad.md** (append-only, <150 lines; graduate to lessons-learned after 3+ repeats)
+- VALIDATED pattern for the future? -> **docs/lessons-learned.md** (append-only; rule + **Why** + **Apply when**)
+- DECISION made? -> **docs/decisions.md** (append-only ledger + scope + discarded alternative). Threshold: only if it closes a real alternative, or someone might revert/question it later
+- What was DONE today? -> **docs/dev-changelog.md** (with commit)
+- Large session close with meta-process distillation? -> **docs/cerebrate-log/YYYY-MM-DD_slug.md** (skill `cerebrate`)
+
+## Skills
+
+- `cerebrate` - intelligent reflection at block/session close. Mini-Cerebrate mid-work if >5 findings pile up
+- `agent-dispatch` - the 60-second procedure before any delegation (delegate at all? rigor, vehicle, model + effort, prompt, receive). Ready-made roles in `.claude/agents/`, invoked by name; web research always via `web-researcher`
+- `cerbero` - security evaluation of any third-party MCP/skill BEFORE installing. Tooling evaluation is global, not per-project
+- Before installing ANY third-party MCP/skill: route it through `cerbero` first
+
+## Cerebrate config
+
+The `cerebrate` skill (close of a significant block/session) reads these:
+
+- `validation_command`: `powershell -NoProfile -ExecutionPolicy Bypass -File system/scripts/check-docs.ps1 -Mode report`
+- `doc_inventory`: this CLAUDE.md (Structure + Routing) - the doc map for the coherence scan
+- `persistence_targets`: `docs/status.md` (state), `docs/decisions.md` (decisions), `docs/lessons-learned.md` (validated patterns)
+- `domain_signals`: (1) did this session graduate a pattern worth adding to `docs/lessons-learned.md`? (2) did it expose a gap in the method? (3) did the working configuration in `docs/status.md` fit this block, and should the next one change it? - signals, NOT native lenses
+- `coherence_scope`: cross-doc
+- **Depth scales with the session** (small/medium/large, per the skill's calibration): every close produces a log entry; trivial closes stay light
+
+## Conventions
+
+- Commits: `type(scope): description`, English, ISO dates (e.g. `feat(sales): add follow-up template`)
+- **Docs and commits in English** (agentic-first - agents read these). Stakeholder-facing comms stay in the stakeholder's language
+- Markdown: kebab-case filenames (`follow-up-template.md`). One concept = one doc
+- **Audit this CLAUDE.md after each significant change**: target <200 lines. If it grows past that, move detail into `system/` or a domain doc
+
+## Security
+
+- Secrets as env vars in `.env` (gitignored). Never hardcode credentials, tokens, or connection strings
+- Sensitive files in a gitignored folder; MCP tools at minimum privilege (deny write/delete/send where possible)
+
+## Scratchpad
+
+`docs/scratchpad.md` - session log (append-only, <150 lines). Read at session start, append at close. **Not** auto-imported: it changes every session, and auto-loading a daily log each time spends context for little gain (read it on demand).

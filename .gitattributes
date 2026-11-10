@@ -1,0 +1,11 @@
+# Store text as LF in the repo; check out native per platform.
+* text=auto
+
+# Windows scripts keep CRLF on checkout
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf
+
+# JSON consumed by Windows tooling (hooks / settings): pin CRLF so
+# `* text=auto` doesn't normalize it to LF on a clone and churn diffs.
+*.json text eol=crlf

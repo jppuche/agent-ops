@@ -1,0 +1,31 @@
+{
+  "source": "https://github.com/jppuche/Cerbero",
+  "version": "1.3.0",
+  "commit": "744dfa0faddccf6abddad3cc872872ac6ff8b87a",
+  "files": {
+    "cerbero-scanner.py": "0b82f8dbaf16ac1b19034af63b83e7b33453c86aaba3e49c88535f019fac42f2",
+    "mcp-audit.py": "6e0b1a45d6e88f52817dc0cb7515a087202d3cf4126534ce4df9c3e1ed0f98eb",
+    "pre-tool-security.py": "3e6eee74fce8e00a3c0adf2cac8b9024885db3340f8fb725ca0ebd515717012e",
+    "untrusted-source-reminder.py": "b4a11cb1064fb41b56b5ac198ac5f29c0906982b336a9917317753a817fa4053",
+    "validate-prompt.py": "b87c06ea8f39839103c9fc930807809af6a2d3d8a88a1ec2d52e28a3a4f86fb5",
+    "validate-tool-output.py": "f0058edaac21de178527790342ec1b3ba350d24e17af76cb1906ede093c3e8e6"
+  },
+  "docs": {
+    "SKILL.md": "c30012668074ca004e3593078e8e2939b1847a472e4ddc20e27c8e9a5c1fce65",
+    "op-evaluate-mcp.md": "a858631f5807ca2986e6dcb3624ec53bda8e1b5647b633d760c991b788924d6b",
+    "op-evaluate-skill.md": "c365d89c899d7e21d20bb1f9dad385d13e3ab5593629208fe702fd73a5d432be",
+    "op-full-audit.md": "793e0efb4721cb42fd385ac765f5ab2fd58937d96645a39cdf315daa69eecfa9",
+    "op-verify-existing.md": "554fca06a52c067d6018df0aa889126e45ceec07dca955ca88a3df4a213265aa",
+    "setup-guide.md": "c3344bce03b1ee0189dbf97caa74011fb2adc673aebb0ed490b430e35b21680d",
+    "trusted-publishers.txt": "7f5085598c52129053ffa8a1b69bcb1bcf8bbf327f96e5721f4846f5ac00887a"
+  },
+  "doc_sources": {
+    "SKILL.md": ".claude/skills/cerbero/SKILL.md",
+    "op-evaluate-mcp.md": ".claude/skills/cerbero/op-evaluate-mcp.md",
+    "op-evaluate-skill.md": ".claude/skills/cerbero/op-evaluate-skill.md",
+    "op-full-audit.md": ".claude/skills/cerbero/op-full-audit.md",
+    "op-verify-existing.md": ".claude/skills/cerbero/op-verify-existing.md",
+    "setup-guide.md": ".claude/skills/cerbero/setup-guide.md",
+    "trusted-publishers.txt": "security/trusted-publishers.txt"
+  }
+}

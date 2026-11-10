@@ -1,0 +1,87 @@
+{
+  "_comment": "agent-ops hooks. Copy to .claude/settings.json (init-project does this). Windows PowerShell. SessionStart reports doc health to the agent; a git-commit gate blocks only on critical errors, with one handler per shell tool, Bash and PowerShell, because one 'if' rule names one tool (the 'if' field scopes it to git commit; on a Claude Code old enough to lack 'if' support it would run on every Bash call - run latest and this is fine); PreToolUse:Agent captures every dispatched subagent prompt, with the call's model / effort, to outputs/fanouts/_dispatched-prompts.jsonl (audit trail for the prompt->output->work triad); SubagentStop (all agents, async, never blocks) logs per-request token usage to outputs/fanouts/_subagent-usage.jsonl; PreToolUse:SubagentHandback and SubagentStop on the kit roles send a role back (at most twice) when its report lacks the CHECKED: / NOT CHECKED: closing lines, or, for extractor, a COVERAGE line with real numbers - a missing close, not a false 'done'. Commands resolve through CLAUDE_PROJECT_DIR, fixed at session start: a session moved to another project mid-run runs the previous project's scripts (system/scripts/README.md). permissions.blockWritesOutsideWorkingDirectories (Claude Code v2.1.314+; ignored by older builds): Write / Edit / NotebookEdit refuse paths outside the working directories in every permission mode - a session cannot edit another repo by accident; add a shared folder with /add-dir or additionalDirectories in USER settings (system/scripts/README.md).",
+  "permissions": {
+    "blockWritesOutsideWorkingDirectories": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/system/scripts/check-docs.ps1\" -Mode report",
+            "timeout": 30,
+            "statusMessage": "Checking docs..."
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit*)",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/system/scripts/check-docs.ps1\" -Mode gate",
+            "timeout": 20
+          }
+        ]
+      },
+      {
+        "matcher": "PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "PowerShell(git commit*)",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/system/scripts/check-docs.ps1\" -Mode gate",
+            "timeout": 20
+          }
+        ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/system/scripts/capture-agent-prompt.ps1\"",
+            "timeout": 10
+          }
+        ]
+      },
+      {
+        "matcher": "SubagentHandback",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/system/scripts/check-closing-lines.ps1\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/system/scripts/log-subagent-usage.ps1\"",
+            "async": true,
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "fidelity-verifier|domain-analyst|adversarial-reviewer|web-researcher|executor|operator|extractor",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${CLAUDE_PROJECT_DIR}/system/scripts/check-closing-lines.ps1\"",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

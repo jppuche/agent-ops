@@ -1,0 +1,26 @@
+---
+doc_type: log
+purpose: Append-only changelog of the project work. What was done each day.
+audience: [agents, humans]
+when_to_use:
+  - At session close with significant changes, add the day's entry
+  - Recover context of what happened on a specific date
+last_verified: YYYY-MM-DD
+maintenance: append-only
+entries_format: "## YYYY-MM-DD -- Short description"
+retention_policy: "Never prune. Append-only, full history."
+related_docs:
+  - decisions.md - WHY it was decided (this doc records WHAT was done)
+  - status.md - current state and pending items
+  - scratchpad.md - session notes (the HOW / technical detail)
+---
+
+# Development changelog - [PROJECT_NAME]
+
+> Append-only. Format: `## YYYY-MM-DD -- Short description`.
+> Record WHAT was done, not HOW (the how goes in `scratchpad.md` / `lessons-learned.md`; the why in `decisions.md`).
+> Close each entry with the day's commit(s) for traceability.
+
+## YYYY-MM-DD -- initial bootstrap
+
+- Project bootstrapped from the agent-ops kit. *(commit ...)*

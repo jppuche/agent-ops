@@ -1,0 +1,37 @@
+# STATUS - [PROJECT_NAME]
+
+Current project state. Source of truth - read first every session.
+
+Last updated: YYYY-MM-DD
+
+## Active work
+
+Current focus: <none yet>
+
+The **macro anchor** - if the conversation drifts, this says where we are. The session's task list is the micro view (steps inside the current focus); don't duplicate it here. Keep this line current: what is being worked on right now, and the next concrete step.
+
+## Working configuration
+
+Configuration: <not set - propose one at kickoff>
+
+How this project gets its work done, in one or two lines with the reason: the main-session model, one session or agents (which vehicle), the gate a risky change must pass, and whether the advisor is in play. Set it at kickoff and change it only on the events listed in `system/agent-orchestration.md` sec 2; note the date of each change.
+
+## In progress
+
+(no entries - what's active right now + live blockers)
+
+## Done
+
+(no entries - closed milestones with date)
+
+## Pending
+
+(no entries - identified work, grouped by area)
+
+## Decisions
+
+(no entries - decisions made with date + reason; anchors so we don't re-litigate)
+
+## Blockers
+
+(no entries - external dependencies stalling work)

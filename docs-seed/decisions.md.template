@@ -1,0 +1,35 @@
+---
+doc_type: decision
+purpose: Append-only log of technical and process decisions. Records WHAT was decided, WHY, and WHAT was discarded.
+audience: [agents, humans]
+when_to_use:
+  - Before revisiting a prior decision (search by date/scope)
+  - When recording a new decision (append a row, never edit prior ones)
+  - Consistency audit (do any decisions contradict each other?)
+last_verified: YYYY-MM-DD
+maintenance: append-only
+entries_format: "| YYYY-MM-DD | Scope | Decision | Context / Why | Discarded alternatives | Status |"
+retention_policy: "Never delete. Mark superseded with a new row linking to the prior one (Status: superseded-by YYYY-MM-DD)."
+status: living-log
+related_docs:
+  - status.md - Decisions section (summary of the current ones)
+  - dev-changelog.md - what was done each day
+---
+
+# Technical and process decisions
+
+> Append-only. One row per decision. Never edit prior rows; to reverse, add a new row marking the previous one as superseded.
+> **Scope**: `process` `data` `tooling` `scope` `design` (extend per project/domain).
+> **Status**: `current` `superseded-by <date>` `tentative` (to confirm with evidence).
+
+| Date | Scope | Decision | Context / Why | Discarded alternatives | Status |
+|------|-------|----------|---------------|------------------------|--------|
+| YYYY-MM-DD | process | (example row - replace with your first real decision) | (why) | (what you ruled out) | current |
+
+---
+
+## Conventions
+
+- **Append-only**: to change your mind, add a new row and set the previous one to `Status: superseded-by <date>`. Preserves the "why we changed" history.
+- **Decisions touching production**: not closed without the project's validation steps.
+- **Relation to status.md**: the "Decisions" section of `status.md` is the summary of the *current* decisions to start a session; this file is the full historical ledger (including superseded ones).
