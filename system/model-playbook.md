@@ -108,7 +108,19 @@ agentic work, or when your evals on Claude Opus 5.5 at higher effort still fall 
 
 The rule has two triggers for Fable, and the kit uses both: the **kind of work** (demanding reasoning,
 long-horizon agentic work, ambiguous problems), or **Opus at raised effort has actually failed**. A
-hunch that a routine task is hard is neither. For routine work, raise effort before you change model.
+hunch that a routine task is hard is neither.
+
+**When a model is not good enough for a task, escalate in this order** [DOCS, *Which Claude model should
+you build with?*, claude.dev, 2026-11-09]:
+
+1. **Give it a way to check its own work**: a test, a build, a script that calls the endpoint. This is a
+   tool that can fail, not a "verify your work" line (section 5 cuts those).
+2. **Raise effort one level.**
+3. **Move to the next model up, starting at a lower effort** than the smaller model was on. Past `high`,
+   one more effort level can cost as much as the bigger model: compare both on your own task.
+
+Effort does not add knowledge or skill a model lacks; when that is what is missing, step 3 is the only
+one that helps.
 
 ### The orchestrator is Opus or Fable [DOCS + PROJECT]
 
@@ -127,6 +139,19 @@ page, 2026-11-10]:
   for roughly half the cost per task. One vendor benchmark, not a kit measurement - but it means "Opus
   at `xhigh` or `max`" is no longer the obviously cheaper step before Fable on hard work. Compare cost
   per completed task.
+
+**Switching the main model mid-session has a price** [DOCS, *Preserved thinking*, "Switching models
+mid-conversation", read raw 2026-11-11; the cache and `/compact` advice is from the claude.dev post above]:
+
+- **The prompt cache belongs to the model that wrote it.** The first turn on the new model pays the
+  cache-write price on the whole conversation. Switch at a natural break: run `/compact` first, or start
+  a new session from a short written plan.
+- **A move down loses the earlier reasoning.** A model reads its own thinking blocks and those of a
+  fixed set of others; blocks it cannot read are dropped without an error. Opus 5.5 reads Sonnet 5.5's
+  and Haiku 5.5's; Fable 5.2 reads all three; **no other model reads Fable 5.2's**. So Fable to Opus (a
+  planning session handed down for execution) continues without the reasoning behind the plan, and the
+  model re-creates what it needs at the cost of output tokens. Put the decisions in a file before you
+  switch down; what is only in the thinking does not travel.
 
 What changes for the kit when the main session is Fable [PROJECT]:
 
@@ -198,6 +223,12 @@ across rows.
 
 Effort applies to *every* output token - thinking, prose, and tool calls. Lower effort means fewer and
 terser tool calls; higher effort means more of them, plus plan-before-acting narration.
+
+**What a level buys on Opus 5.5** [DOCS, *Optimizing for cost and intelligence*, SWE-bench Pro reference,
+read raw 2026-11-11; one vendor benchmark, not a kit measurement]: measured against `high`, `medium`
+scored about 2.5 points lower for about 70% of the cost per task; `low` about 8 points lower for about a
+third; `xhigh` about 1.4 points higher for 2.5 times the cost. The steep part of the curve is below
+`high`, which is why the kit raises to `xhigh` only on a measured gain.
 
 **Gotchas that have teeth:**
 
@@ -572,6 +603,25 @@ option for an environment that allows it.
 Fable 5.2 as advisor needs Claude Code v2.1.321 or later. Subagents inherit the configured advisor and
 apply the same pairing check against their own model.
 
+**What the vendor measured** [DOCS, *Optimizing for cost and intelligence*, "Advisor strategy", read raw
+2026-11-11]. Read the pairing table above as what is allowed, not as what pays. Verbatim: *"An advisor
+can help only when the executor consults it."* Of the vendor's measured pairings, none clearly beat its
+executor alone:
+
+- Opus 5.5 at `high` with a Fable 5.1 advisor, internal coding benchmark: 1.7 points over the executor
+  alone, "at the edge of run-to-run noise", for about 2.1 times the cost - about what one more effort
+  level buys.
+- Haiku 5.5 or Sonnet 5.5 with an Opus 5.5 advisor, a question-answering benchmark: never consulted,
+  within noise, 12% and 25% more per question (the tool definition is paid on every request).
+- Opus 5.5 at `low` with a Fable 5.1 advisor, chart reading: consulted on 1 of 300 tasks, 7 points
+  *below* the executor alone.
+
+The vendor's advice: price the executor alone first, measure the consult rate on your own tasks, and
+restore the executor's effort if the consult rate collapses (an executor at lower effort asks less). None
+of these runs used Fable 5.2 as advisor. For the kit this means the advisor is an option to measure, not
+a default to recommend: where a project cannot measure it, raising effort or switching the main model
+(section 2) is the better-evidenced step.
+
 **When it earns its cost** [DOCS]: long, multi-step tasks where most turns are routine and plan quality
 decides the outcome. Less value on short tasks, or where every turn needs the stronger model - there,
 switch the main model. The two timings the vendor found to matter:
@@ -626,6 +676,12 @@ catching a weak plan. It complements a validation gate and does not replace one.
 
 Read verbatim or raw where the claim depends on wording. Settings keys and env vars come from the raw
 `.md` pages (`curl -sL https://code.claude.com/docs/en/<page>.md`), never from a summary.
+
+Fetched 2026-11-11 (read raw; sections 2, 3 and 8 only - section 1 was not re-read on this date):
+
+- Which Claude model should you build with? (escalation order, switching at a natural break; a blog post, used only where it points to the pages below or gives practice advice) - https://claude.dev/blog/which-claude-model-should-you-build-with/
+- Optimizing for cost and intelligence ("Advisor strategy" table and advice; the Opus 5.5 effort figures in its SWE-bench Pro reference) - https://platform.claude.com/docs/en/about-claude/models/optimizing-for-cost-and-intelligence
+- Preserved thinking ("Switching models mid-conversation", the table of which model reads which blocks) - https://platform.claude.com/docs/en/build-with-claude/preserved-thinking
 
 Fetched 2026-11-10 (Fable 5.2 release; saved raw and read verbatim):
 

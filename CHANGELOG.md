@@ -2,6 +2,17 @@
 
 Release notes for the kit itself, not for any project built from it. Dates are ISO. What an existing instance has to copy for each release is in [UPGRADING.md](UPGRADING.md). Versions before v0.10.0 were not published; their notes are kept short.
 
+## v0.10.1 - 2026-11-11
+
+`model-playbook.md` checked against the vendor's model-choice post of 2026-11-09 and the pages it cites, read raw. No staffing decision changed; four additions:
+
+- **Escalation order** (sec 2): give the model a way to check its work, then raise effort one level, then move up a model at a lower effort.
+- **Switching the main model mid-session** (sec 2): the first turn on the new model rewrites the cache, and a move down drops the earlier reasoning (no other model reads Fable 5.2's thinking blocks). Switch at a break, with the decisions written to a file.
+- **What an effort level buys on Opus 5.5** (sec 3): the vendor's figures for `low`, `medium` and `xhigh` against `high`.
+- **The advisor, as measured by the vendor** (sec 8): none of its measured pairings clearly beat the executor alone. The kit now presents the advisor as an option to measure, not a default to recommend.
+
+Kept as they were, because the kit has its own measurement and the post gives only starting points: `web-researcher` on Sonnet at `high`, the Haiku roles at `high`. Noted and not acted on: the post puts repeated review and everyday documents on Sonnet, where the kit's judgment roles and `executor` pin Opus; that is a candidate for a staffing A/B, not an edit. Section 1 of the playbook was last re-verified on 2026-11-10 and was not re-read for this release.
+
 ## v0.10.0 - 2026-11-10
 
 **First public release.**

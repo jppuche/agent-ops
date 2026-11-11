@@ -4,6 +4,10 @@ A project created with `/init-project` is a snapshot of the kit at that moment. 
 
 Paths below are relative to the kit clone (source) and to the instance (destination). "Re-run `setup.ps1`" means in the kit clone; it reinstalls the four user-level skills.
 
+## Instances created before v0.10.1
+
+Copy `system/model-playbook.md` into the instance's `system/`. Nothing else changed.
+
 ## Instances created before v0.10.0
 
 `system/scripts/settings.hooks.json` now gates `git commit` through the PowerShell tool as well as Bash. Copy the `PowerShell` PreToolUse entry into the instance's `.claude/settings.json`; without it, a commit made through the PowerShell tool skips the gate. Copy `system/` and the `agents/*.md` you use (`web-researcher` now starts without the project's `CLAUDE.md`: put everything a research question needs in its prompt). Re-run `setup.ps1`: `cerebrate` can now be started by the agent at the close of a block; it still waits for your approval before it writes.

@@ -1,6 +1,6 @@
 # agent-ops: guía de uso
 
-![version](https://img.shields.io/badge/version-v0.10.0-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
+![version](https://img.shields.io/badge/version-v0.10.1-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
 
 [Read in English](README.md) | [Actualizar una instancia (UPGRADING.md, en inglés)](UPGRADING.md) | [Changelog](CHANGELOG.md)
 
@@ -198,7 +198,7 @@ Son texto plano en `.claude/settings.json` + scripts en `system/scripts/`. Los p
 
 - **Actualizar:** `git pull` en el clon del kit. Los proyectos nuevos toman la versión nueva; los viejos quedan como snapshot. Para traer uno viejo al día, sigue [UPGRADING.md](UPGRADING.md).
 - **Mejorar:** cuando descubras un patrón nuevo o un hueco del método en un proyecto, lo capturas ahí (`docs/lessons-learned.md`, o el `cerebrate` de cierre). Cuando se valida 2-3 veces, abre un issue (ver `CONTRIBUTING.md`).
-- **Versionar:** el kit se versiona como producto (`CHANGELOG.md`). Versión actual: **v0.10.0**.
+- **Versionar:** el kit se versiona como producto (`CHANGELOG.md`). Versión actual: **v0.10.1**.
 
 ---
 
