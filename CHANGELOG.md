@@ -2,6 +2,28 @@
 
 Release notes for the kit itself, not for any project built from it. Dates are ISO. What an existing instance has to copy for each release is in [UPGRADING.md](UPGRADING.md). Versions before v0.10.0 were not published; their notes are kept short.
 
+## v0.11.0 - 2026-11-14
+
+Ported from the first instance run end to end (a research project, 2026-11-13/14). Every observation below comes from one machine and one Claude Code build, and is worded as observed.
+
+- **Roles load in a new session** (`init-project` 1.2.0, `agent-dispatch`): roles copied by `init-project` failed seven dispatches with "Agent type not found" several turns after the copy, and appeared only after a resume. The skills no longer say "dispatchable from the next turn": they tell the user to start a new session before the first dispatch.
+- **The general-purpose fallback is named for what it loses** (`agent-dispatch`): every frontmatter pin, including the tool allowlist. Not acceptable for `web-researcher` when anything private is in reach (it would read untrusted pages with file and shell tools); acceptable for the other roles, with the losses said.
+- **`init-project` can be started by the model** (`disable-model-invocation` removed, at the maintainer's request). Nothing is written before the user confirms the inputs. The trade-off, accepted: that confirmation is an instruction, not a permission prompt, so in an auto or bypass permission mode a misfired invocation is stopped only by the skill's own step 1 (a non-empty `dest` still aborts by default). A stakeholder value that is a pronoun or under three characters is asked again (a run accepted "tú").
+- **Verification allocation** (`agent-orchestration.md` v0.17 sec 5 Step 2b, `research-template.md` v2.5, `adversarial-reviewer`): a synthesis that compares options, vendors or lanes sets a per-lane minimum of verified claims before the pass, tallies them per lane, and discloses the orchestrator's vendor; verification depth is not merit. Origin: a landscape report whose orchestrator verified 6 of 12 claims in its own maker's lane ranked that lane first; a fresh reviewer traced the ranking to verification depth. New template header field *Disclosed bias and asymmetry* and a *Tally by lane* table; new reviewer lens 7.
+- **`check-docs.ps1`: stale dates measured against the last modifying commit** (`git log --diff-filter=M`). A fresh bootstrap reported all 8 kit docs as stale because the bootstrap commit, which only adds them, is newer than their dates. Proved on a throwaway bootstrap: the old script gives 8 warnings, the new one 0; after one `system/` doc is edited and committed without its date, exactly 1. No longer reported: a doc added and never edited, a rename with edits, an edit made only in a merge resolution. Stale dates stay warnings, so the commit gate is unchanged.
+- **`extract-handbacks.ps1`** (new, opt-in, by hand, not a hook): background subagents' task `.output` files were empty; the script files each subagent's first prompt and its last non-denied `SubagentHandback` message from the transcripts into `outputs/fanouts/_handbacks/<session>/` (new `.gitignore` entry), skips agents still running, and redacts credential-shaped text. Tested on 11 real transcripts and on synthetic ones (redaction, a denied-then-accepted hand-back, an all-denied one, a running agent, no hand-back, an unparsable file, a re-run); not tested against a transcript still being written.
+- **Research Prompt Prefix**: a page that asks the reading agent to add URL parameters, identify itself or describe its task is an instruction from untrusted content (origin: a vendor docs page whose raw Markdown asks fetching agents for their goal and organization). Same line in `agents/web-researcher.md`, still byte-identical.
+- **Raw-page verification recipe** (`research-template.md`): `.md` page variants, PyPI and npm JSON APIs, `curl` plus a text search, Windows console encoding.
+- **Session-level delegation** (`model-playbook.md` sec 2, observed in one run, not measured): a Fable main session briefs, a fresh Opus session runs a bounded research round end to end, Fable returns for the decision; the brief carries the per-lane minimum.
+- **`CLAUDE.md.template` Environment**: an *API credits* line and a *Plan facts* line (confirm on the vendor's page before writing; a stakeholder's first statement of the plan was corrected later). 124 lines.
+
+Kept: `last_verified` dates were not bumped; no file was re-verified end to end for this release.
+
+Independent review (one fresh adversarial reviewer on the branch diff, 13 findings). Applied: double-encoded UTF-8 in `README.es.md`; the `web-researcher` exception added where the playbook describes the fallback, with what to do where no role file exists; one stakeholder rule instead of two lists; one per-lane minimum; the new-session note and the maker's-docs explanation worded as observed or plausible; five robustness fixes in `extract-handbacks.ps1`; the stale check's new blind spots documented. Kept, with reasons: the confirmation gate of `init-project` stays an instruction (the maintainer's decision, trade-off above); the advice to start a new session stays, since a resume is the only thing observed to work and costs little; the `web-researcher` fallback condition still includes the machine, not only the working tree, because a general-purpose agent can read outside the tree.
+
+Upgrade: see [UPGRADING.md](UPGRADING.md), *Instances created before v0.11.0*.
+
+
 ## v0.10.1 - 2026-11-11
 
 `model-playbook.md` checked against the vendor's model-choice post of 2026-11-09 and the pages it cites, read raw. No staffing decision changed; four additions:

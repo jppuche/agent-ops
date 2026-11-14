@@ -4,6 +4,17 @@ A project created with `/init-project` is a snapshot of the kit at that moment. 
 
 Paths below are relative to the kit clone (source) and to the instance (destination). "Re-run `setup.ps1`" means in the kit clone; it reinstalls the four user-level skills.
 
+## Instances created before v0.11.0
+
+Copy into the instance: `system/agent-orchestration.md`, `system/model-playbook.md`, `system/templates/research-template.md`, `system/scripts/check-docs.ps1`, `system/scripts/extract-handbacks.ps1` (new) and `system/scripts/README.md` into its `system/`; `agents/adversarial-reviewer.md` and `agents/web-researcher.md` into its `.claude/agents/`, then start a new session before dispatching them (a role file changed mid-session was observed to load only after a new session or a resume). Add `outputs/fanouts/_handbacks/` to its `.gitignore`. In its `CLAUDE.md` *Environment* block, add the *API credits* and *Plan facts* lines from `CLAUDE.md.template` and fill the first. Re-run `setup.ps1` (`init-project` and `agent-dispatch` changed).
+
+What changes in behaviour:
+
+- **SessionStart doc report**: a doc whose `last_verified` predates the commit that added it is no longer reported; only a later edit makes it stale. The upgrade commit itself edits the copied docs, so it reports each one whose kit date is older than that commit: re-read them, then update the date. The commit gate is unchanged (stale dates were and stay warnings).
+- **`init-project` can be started by asking in words**; it still waits for your confirmation of its inputs before writing.
+- **Research synthesis that compares options**: a per-lane minimum of verified claims, a tally by lane and a disclosure of the orchestrator's vendor are now part of the gate, and `adversarial-reviewer` checks for them.
+- Hand-backs can be filed after a fan-out with `powershell -NoProfile -ExecutionPolicy Bypass -File system/scripts/extract-handbacks.ps1` (by hand; no hook).
+
 ## Instances created before v0.10.1
 
 Copy `system/model-playbook.md` into the instance's `system/`. Nothing else changed.

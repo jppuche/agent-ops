@@ -1,6 +1,6 @@
 # agent-ops: guía de uso
 
-![version](https://img.shields.io/badge/version-v0.10.1-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
+![version](https://img.shields.io/badge/version-v0.11.0-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
 
 [Read in English](README.md) | [Actualizar una instancia (UPGRADING.md, en inglés)](UPGRADING.md) | [Changelog](CHANGELOG.md)
 
