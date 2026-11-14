@@ -26,6 +26,8 @@ outputs/fanouts/_state/
 
 # Hook logs: raw dispatched prompts (may carry project / client data) and the MCP audit log
 outputs/fanouts/_dispatched-prompts.jsonl
+# Hand-backs filed by system/scripts/extract-handbacks.ps1 (verbatim agent text, redacted by shape only)
+outputs/fanouts/_handbacks/
 .claude/security/
 
 # Claude Code working files (local only)

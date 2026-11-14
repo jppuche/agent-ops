@@ -43,6 +43,20 @@ Every kit role (`fidelity-verifier`, `domain-analyst`, `adversarial-reviewer`, `
 
 Token test: `NOT CHECKED:` present and a `CHECKED:` not preceded by `NOT ` present. **`extractor` only**: the report must also carry its coverage line with real numbers, matching `COVERAGE: files requested \d+, files read \d+, rows returned \d+` (case-sensitive). The template letters (`N`, `M`, `R`) or a `<n>` placeholder fail it - a measured failure: one extractor run in 18 handed back the template unfilled. Thousands separators also fail it; the role writes plain digits. **Loop guard**: at most 2 denials / blocks per agent (one counter for both tests), then it allows. Every deny, block and allow-after-cap is logged to `outputs/fanouts/_closing-lines.log` (one JSON line each, with `missing`: `closing`, `coverage` or `closing+coverage`). **Limit**: it catches a missing close or an unfilled coverage line, not a false "done" - an agent that stopped early can still write `NOT CHECKED: none` and plausible counts; the orchestrator's own coverage check (files read vs files requested) stays mandatory. It does not see roles dispatched as `general-purpose`. Any failure of the script itself allows (exit 0, error in `_closing-lines.errors.log`).
 
+## Filing hand-backs from the transcripts (`extract-handbacks.ps1`, opt-in, by hand)
+
+The harness may keep no usable copy of a subagent's hand-back: observed 2026-11-13/14 on one machine and one Claude Code build, the task `.output` files of background subagents were empty, and the hand-backs had to be recovered from the transcripts. This script does that in one command. It is **not wired as a hook** (the hook path was not tested end to end); run it after a fan-out, before you file the results.
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File system/scripts/extract-handbacks.ps1                  # newest session with subagents
+powershell -NoProfile -ExecutionPolicy Bypass -File system/scripts/extract-handbacks.ps1 -SessionId <uuid> # one session
+powershell -NoProfile -ExecutionPolicy Bypass -File system/scripts/extract-handbacks.ps1 -All -Force       # every session, overwrite
+```
+
+It reads `~/.claude/projects/<project-slug>/<session-id>/subagents/agent-<id>.jsonl` (the slug is the project path with every character outside `[A-Za-z0-9]` replaced by `-`; override with `-TranscriptRoot`) and writes `outputs/fanouts/_handbacks/<session-id>/<agent-id>__prompt.md` (the first user record: the dispatch prompt) and `__output.md` (the `message` of the **last** `SubagentHandback` call, since earlier ones may have been denied by the closing-line hook; failing that, the last assistant text, labelled). The header records agent type, description, model and effort from the `.meta.json` sidecar. Existing files are skipped unless `-Force`. A transcript it cannot read or parse is skipped and counted. The console gets ids, counts and paths only, never message text.
+
+**Secrets.** Text shaped like a credential (several vendors' API keys and tokens, private-key blocks, JWTs, `password=` / `api_key:` assignments) is replaced by `[REDACTED:<kind>]` before writing, and the count is printed. Shape matching misses what it does not know: review a file before you commit or share it. `outputs/fanouts/_handbacks/` is gitignored; move what an audit needs into `outputs/fanouts/<ticket>-<stage>/`. The transcript format is internal to Claude Code and can change without notice: if a run reports hand-backs missing that you know exist, check one transcript by hand.
+
 ## Modes (also runnable by hand)
 
 ```powershell
@@ -73,6 +87,7 @@ No network, nothing destructive. What each script writes:
 - `check-docs.ps1`: reads docs + `git log`; the only write is `last_verified` dates under `-Mode fix`.
 - `capture-agent-prompt.ps1`: appends to `outputs/fanouts/_dispatched-prompts.jsonl`. The log holds every dispatched prompt verbatim - treat it like the prompts themselves. It is gitignored by default (the kit's `.gitignore`, copied into each instance), so it stays on the machine; commit a reviewed excerpt if an audit needs one.
 - `log-subagent-usage.ps1`: reads subagent transcripts under `~/.claude/projects/` (read-only, shared access); appends to `outputs/fanouts/_subagent-usage.jsonl` and `_subagent-usage.errors.log`; writes small index files in the session scratchpad or `outputs/fanouts/_state/`. Token counts and ids only, no message text.
+- `extract-handbacks.ps1` (by hand only): reads subagent transcripts under `~/.claude/projects/` (read-only); writes redacted copies of prompts and hand-backs under `outputs/fanouts/_handbacks/` (gitignored).
 - `check-closing-lines.ps1`: appends to `outputs/fanouts/_closing-lines.log` and `_closing-lines.errors.log`; writes marker and counter files in the session scratchpad or `outputs/fanouts/_state/`.
 
 All appends are UTF-8 without a BOM. Review the scripts before enabling the hooks if your org requires it.
