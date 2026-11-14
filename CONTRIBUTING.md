@@ -15,7 +15,7 @@ Requirements: see Prerequisites in `README.md` (Windows + PowerShell 5.1+, Git f
 The clone is your **master copy**. You work each project in a **separate folder with its own git**:
 
 1. Make a folder for the project.
-2. Open Claude Code there and type `/init-project` (the skill is user-invoked only, so a phrase in words does not start it). It scaffolds the structure, instantiates `CLAUDE.md`, copies the method + roles, seeds the living docs, installs the hooks, and git-inits that folder. Pass `--domain` to layer a domain kit on top.
+2. Open Claude Code there and type `/init-project`, or ask for a new agent-ops project in words (it confirms its inputs before writing). It scaffolds the structure, instantiates `CLAUDE.md`, copies the method + roles, seeds the living docs, installs the hooks, and git-inits that folder. Pass `--domain` to layer a domain kit on top.
 3. The project folder is independent - this repo's git is never entangled with it. To update the kit, `git pull` the clone; new projects pick up the new version, old ones stay as snapshots.
 
 ## Proposing an improvement

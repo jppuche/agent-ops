@@ -87,10 +87,10 @@ The setup copies the four skills to `~/.claude/skills/` and records the clone's 
 ## Start a project
 
 1. Create an empty folder for the project, outside the kit.
-2. Open Claude Code there and type `/init-project`. The skill is user-invoked only, so a request in plain words does not start it.
+2. Open Claude Code there and type `/init-project`, or ask in plain words for a new agent-ops project. Either way it shows the inputs it collected and writes nothing until you confirm them.
 3. Answer its questions: name, one line on what the project does, who consumes it, and the project type (`build`, `research` or `advisory`). The type sets the working defaults and the role tier: `core` installs five roles, `build` adds `executor` and `operator`.
 
-It lays down `system/`, `docs/` and `.claude/agents/`, instantiates `CLAUDE.md` from the template, installs the hooks in `.claude/settings.json` and optionally runs `git init`. To bring an existing instance up to a newer kit, see [UPGRADING.md](UPGRADING.md).
+It lays down `system/`, `docs/` and `.claude/agents/`, instantiates `CLAUDE.md` from the template, installs the hooks in `.claude/settings.json` and optionally runs `git init`. Then start a new Claude Code session in the project folder: the roles it copied are not dispatchable in the session that copied them (observed on one machine, 2026-11-13). To bring an existing instance up to a newer kit, see [UPGRADING.md](UPGRADING.md).
 
 ## The roles
 

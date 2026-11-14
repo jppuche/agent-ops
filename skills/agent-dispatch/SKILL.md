@@ -16,7 +16,27 @@ there are under `agents/`, and you can pass a role's body as the prompt of a gen
 its `model` and `effort` set on the call. Say once that the project is on an older kit version.
 Exception: `executor` and `operator` are absent by design in a `core`-tier project (research or
 advisory) - that is not an older kit. If the work needs one, say so and copy its file from the kit's
-`agents/` into `.claude/agents/` (dispatchable from the next turn) instead of running it unpinned.
+`agents/` into `.claude/agents/` instead of running it unpinned.
+
+**A role file copied during this session is not dispatchable until a new session starts.** Observed
+2026-11-13 (one machine, one Claude Code build): roles copied by `init-project` failed with "Agent type
+not found" several turns later, seven times, and appeared only after the session was resumed. After a
+copy, ask the user to start a new session (or resume this one) before the first dispatch.
+
+**What the general-purpose fallback loses.** The role's frontmatter does not travel: `model`, `effort`,
+`maxTurns`, `omitClaudeMd` and, above all, the `tools` allowlist. The agent gets the general-purpose
+tool set, and a role body that says "you have no Bash" is then an instruction, not a boundary.
+- **`web-researcher`: the fallback is not acceptable when the working tree or the machine holds anything
+  private** (client data, credentials, personal files, another repository within reach). The role's
+  protection against an injected page is that it has no file or shell tools and starts without the
+  project's `CLAUDE.md`; a general-purpose agent reading untrusted pages has both, so a hijacked run
+  can read local files and send them out through a fetch URL. Start a new session instead, or wait for
+  one. Only on a machine and tree with nothing private may the fallback run, and then say so in the
+  project's `docs/status.md` as a known deviation.
+- **Every other role**: the fallback is acceptable. Pass `model` and `effort` on the call, and say what
+  is lost: the read-only roles (`adversarial-reviewer`, `domain-analyst`, `extractor`) become read-only
+  by instruction only; the turn cap and `omitClaudeMd` (where set) are gone; and the closing-line hook
+  (`check-closing-lines.ps1`) does not see an agent of type `general-purpose`.
 
 Reading `~/.claude/agent-ops-home.txt`: `~` is not a valid path for `Read`; expand it
 (`C:\Users\<user>\.claude\...` on Windows). **A denied Read is not a missing file.** With
@@ -193,5 +213,6 @@ Then check the prompt against these:
 All pin their own model family and effort and end with fixed closing lines. `adversarial-reviewer`,
 `domain-analyst` and `extractor` are read-only by construction (no Edit, Write, NotebookEdit, Bash or PowerShell);
 `fidelity-verifier` needs `Bash` to run checks and is read-only by instruction; `web-researcher` has no
-file tools. Invoke by name rather than re-writing their prompts. A new definition is
-dispatchable only from the next turn.
+file tools. Invoke by name rather than re-writing their prompts. A definition added during a session
+was observed to load only in a new session (or a resume), not on a later turn of the same session (see
+*Where those docs live*).
