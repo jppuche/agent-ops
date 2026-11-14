@@ -153,6 +153,24 @@ mid-conversation", read raw 2026-11-11; the cache and `/compact` advice is from 
   model re-creates what it needs at the cost of output tokens. Put the decisions in a file before you
   switch down; what is only in the thinking does not travel.
 
+**A bounded round handed to a fresh Opus session** [PROJECT, **observed, one run**, 2026-11-14; not
+measured]. A Fable main session wrote a brief; a new Opus session ran one research round end to end -
+dispatched the researchers, verified the deciding claims on the raw pages (35 checks), wrote an addendum,
+had it reviewed by a fresh reviewer and applied the review - and the Fable session came back only to read
+the addendum and decide. No Fable turn ran in between.
+
+- **What it saves**: the orchestrator's share of the round (its dispatch, verification and integration
+  turns) runs on Opus instead of Fable, and the Fable session's context never holds the fetched pages or
+  the subagents' returns. Neither saving was priced: there is no comparison against Fable running the
+  same round, and the quality of the two was not compared.
+- **What the brief must carry**: the question and the lanes being compared, the sources, the output
+  files, what the round must not decide, and the **per-lane minimum of verified claims** with the
+  disclosure of the orchestrator's vendor (`system/agent-orchestration.md` sec 5, Step 2b). The round's
+  orchestrator is the one exposed to verification asymmetry, and it sees only the brief.
+- **Why a session, not a subagent**: the round needs its own subagents and its own review, and a fresh
+  context. The decision comes back through a file, which also suits the switching note above: nothing
+  the Fable session reasoned has to travel through another model's context.
+
 What changes for the kit when the main session is Fable [PROJECT]:
 
 - **The judgment roles sit below the orchestrator.** `adversarial-reviewer` and `domain-analyst` pin

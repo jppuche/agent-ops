@@ -74,6 +74,8 @@ How this project gets its work done is a decision, recorded under *Working confi
 Edit these lines to fit where the project runs. An option this block rules out stays documented in `system/`: recommend it to the stakeholder as something another environment allows, and do not enable it here.
 
 - **Billing**: the subscription plan's included limits only. Nothing that bills usage credits or API tokens runs without the stakeholder's go-ahead for that specific use
+- **API credits**: none assumed. If the plan includes API credits, write here the monthly amount, what they cover, what happens at zero (requests stop, or bill a payment method) and who may spend them; until this line says so, nothing spends them
+- **Plan facts** (plan name, limits, credits): confirm each on the vendor's plan or pricing page, with the date read, before writing it on these lines. A stakeholder's first statement of the plan was corrected later in one project (observed 2026-11-13)
 - **Advisor** (`/advisor`): allowed only where it draws on the plan's limits. A Fable advisor is ruled out while the `/model` picker marks the Fable row "Requires usage credits". You cannot see that picker: ask the stakeholder once and write the answer on this line
 - **Fast mode, cloud sessions, scheduled cloud agents**: ask first (they bill or run outside this machine)
 - **Large fan-outs** (a workflow, an agent team, ultracode): say what it would cost against the plan's limits and get a go-ahead before starting one
