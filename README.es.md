@@ -60,7 +60,7 @@ Eso hace dos cosas:
 ## 2. Empezar un proyecto nuevo
 
 1. **Crea una carpeta** para el proyecto, separada del kit.
-2. **Abre Claude Code en esa carpeta** y escribe **`/init-project`**, o pide con palabras un proyecto nuevo de agent-ops. En ambos casos te muestra los datos que recogiÃ³ y no escribe nada hasta que los confirmes.
+2. **Abre Claude Code en esa carpeta** y escribe **`/init-project`**, o pide con palabras un proyecto nuevo de agent-ops. En ambos casos te muestra los datos que recogió y no escribe nada hasta que los confirmes.
 3. La skill te pide lo básico (nombre, una línea de qué hace, quién lo consume, el path) y el **tipo de proyecto**: `build` (código, pipeline de datos, automatización, API), `research` (responder una pregunta desde fuentes) o `advisory` (comparar opciones y recomendar un curso). El tipo define los defaults de trabajo y el **nivel** de roles: `core` instala 5 roles; `build` suma `executor` y `operator`. Todo lo demás (método, docs vivos, hooks) es igual en ambos niveles. Con eso:
    - Arma la estructura (`system/ docs/ .claude/agents/`).
    - Instancia el `CLAUDE.md` desde la plantilla (sustituye los placeholders).
@@ -69,7 +69,7 @@ Eso hace dos cosas:
    - Instala los hooks.
    - Hace `git init` (opcional).
 
-   DespuÃ©s abre una sesiÃ³n nueva de Claude Code en la carpeta del proyecto: los roles que copiÃ³ no se pueden despachar en la misma sesiÃ³n que los copiÃ³ (observado en una mÃ¡quina, 2026-11-13).
+   Después abre una sesión nueva de Claude Code en la carpeta del proyecto: los roles que copió no se pueden despachar en la misma sesión que los copió (observado en una máquina, 2026-11-13).
 
 ### Con capa de dominio
 
@@ -189,7 +189,7 @@ Son texto plano en `.claude/settings.json` + scripts en `system/scripts/`. Los p
 
 ## 6. Las 4 skills
 
-- **`init-project`**: crea un proyecto nuevo desde el kit. Escribe `/init-project` o pÃ­delo con palabras; confirma los datos contigo antes de escribir.
+- **`init-project`**: crea un proyecto nuevo desde el kit. Escribe `/init-project` o pídelo con palabras; confirma los datos contigo antes de escribir.
 - **`cerebrate`**: reflexión al cierre de un bloque o sesión: destila aprendizajes y actualiza los docs vivos. Puedes escribir `/cerebrate`, o Claude la arranca al cerrar un bloque; en ambos casos muestra su plan y espera tu aprobación antes de escribir.
 - **`agent-dispatch`**: Claude la carga antes de delegar (subagente, fan-out, gate).
 - **`cerbero`**: evaluación de seguridad de cualquier MCP o skill de terceros **antes** de instalarlo. Sus hooks se instalan aparte (ver `skills/cerbero/setup-guide.md`). `skills/cerbero/` se sincroniza desde [Cerbero](https://github.com/jppuche/Cerbero) (MIT, mismo autor): no se edita aquí, y `python skills/cerbero/tests/run_tests.py` falla si algo difiere del registro en `skills/cerbero/hooks/UPSTREAM.json`.

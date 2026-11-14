@@ -18,10 +18,10 @@ Exception: `executor` and `operator` are absent by design in a `core`-tier proje
 advisory) - that is not an older kit. If the work needs one, say so and copy its file from the kit's
 `agents/` into `.claude/agents/` instead of running it unpinned.
 
-**A role file copied during this session is not dispatchable until a new session starts.** Observed
-2026-11-13 (one machine, one Claude Code build): roles copied by `init-project` failed with "Agent type
-not found" several turns later, seven times, and appeared only after the session was resumed. After a
-copy, ask the user to start a new session (or resume this one) before the first dispatch.
+**A role file copied during this session may not be dispatchable until a new session or a resume.**
+Observed 2026-11-13 (one machine, one Claude Code build): roles copied by `init-project` failed with
+"Agent type not found" several turns later, seven times, and appeared after the session was resumed.
+After a copy, ask the user to start a new session (or resume this one) before the first dispatch.
 
 **What the general-purpose fallback loses.** The role's frontmatter does not travel: `model`, `effort`,
 `maxTurns`, `omitClaudeMd` and, above all, the `tools` allowlist. The agent gets the general-purpose
@@ -31,8 +31,11 @@ tool set, and a role body that says "you have no Bash" is then an instruction, n
   protection against an injected page is that it has no file or shell tools and starts without the
   project's `CLAUDE.md`; a general-purpose agent reading untrusted pages has both, so a hijacked run
   can read local files and send them out through a fetch URL. Start a new session instead, or wait for
-  one. Only on a machine and tree with nothing private may the fallback run, and then say so in the
-  project's `docs/status.md` as a known deviation.
+  one. Only on a machine and tree with nothing private may the fallback run, and then record it as a
+  known deviation (the project's `docs/status.md`, or the session's report where there is none). Where
+  no `.claude/agents/web-researcher.md` exists at all (the master kit repo), check the few claims you
+  need yourself on the raw pages (`system/templates/research-template.md`, *Raw-page verification
+  recipe*) or run the research from an instance.
 - **Every other role**: the fallback is acceptable. Pass `model` and `effort` on the call, and say what
   is lost: the read-only roles (`adversarial-reviewer`, `domain-analyst`, `extractor`) become read-only
   by instruction only; the turn cap and `omitClaudeMd` (where set) are gone; and the closing-line hook

@@ -137,8 +137,8 @@ related_docs:
 
 ## Verification Log (M for VERIFIED and FULL SYSTEM modes)
 
-<!-- Mandatory per Agent System sec 5 (system/agent-orchestration.md). Orchestrator re-verifies top 3-5 claims by impact
-     (per lane, when the report compares lanes), directly (never delegated). -->
+<!-- Mandatory per Agent System sec 5 (system/agent-orchestration.md). Orchestrator re-verifies top 3-5 claims by impact,
+     plus what brings every lane to its minimum when the report compares lanes, directly (never delegated). -->
 
 ### Claims triaged for verification
 

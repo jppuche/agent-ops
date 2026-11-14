@@ -561,6 +561,8 @@ agent told to read its role file; its `model`, `effort`, `tools`, `maxTurns` and
 ignored. Pass `model` and `effort` on the call, or the agent runs on the session's model and effort.
 For a role on `haiku`, paste the role file's body into the dispatch prompt instead of pointing at the
 file: an instruction it reads from a file arrives as a tool result and may be dropped (section 4).
+**Not for `web-researcher` where anything private is in reach**: the dropped `tools` allowlist was its
+boundary against injected pages (`agent-dispatch`, *Where those docs live*).
 
 **Considered and not adopted (2026-10-08):**
 

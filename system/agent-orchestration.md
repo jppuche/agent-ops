@@ -239,18 +239,18 @@ For each triaged claim, verify independently (NOT by re-reading the agent's outp
 
 **Step 2b - Verification allocation (a synthesis that compares options, vendors or lanes):**
 Before writing a synthesis that compares or ranks options, vendors or lanes (a "lane" is one of the things compared, with the claims about it):
-- **Set a per-lane minimum** of orchestrator-verified deciding claims before verifying, the same for every lane (e.g. 2-3 each). The top 3-5 of Step 1 are then picked per lane, not overall.
+- **Set a per-lane minimum** of orchestrator-verified deciding claims before verifying, the same for every lane (2 at the least; 3 when a lane may be ranked first). Step 1's triage still picks the top 3-5 deciding claims, and then adds claims until every lane reaches the minimum.
 - **Count the verified claims per lane** when the pass is done, and put the tally in the Verification Log. A lane below the minimum is either verified up to it or marked short, next to the ranking.
 - **Disclose the orchestrator's vendor**: name the model that orchestrated and its maker, and any lane that belongs to that maker (or to anyone else the orchestrator has a tie to). It goes in the report header (*Disclosed bias and asymmetry*).
 - **Verification depth is not merit.** A lane with more verified claims looks stronger because it was checked more, not because it is better. No ranking may rest on a difference in how deeply each lane was verified; where the tallies differ, the ranking says so.
 
-Origin (2026-11-14, observed once): a landscape report whose orchestrator verified 6 of its 12 claims in its own maker's lane ranked that lane's option first. A fresh reviewer traced the ranking to verification depth, not evidence; the corrective round set a per-lane minimum and inverted the asymmetry. Checking your own maker's docs is the easiest verification to reach for (they are the docs you know best), which is why the minimum is set before the pass, not after.
+Origin (2026-11-14, observed once): a landscape report whose orchestrator verified 6 of its 12 claims in its own maker's lane ranked that lane's option first. A fresh reviewer traced the ranking to verification depth, not evidence; the corrective round set a per-lane minimum and inverted the asymmetry. A plausible reason, not shown: the docs of the orchestrator's own maker are the ones it knows best and reaches for first. Either way, the minimum is set before the pass, not after.
 
 **Step 3 - Write synthesis with verification log:**
 Use the Research Document Template (`system/templates/research-template.md`). The Verification Log section is mandatory, not optional. Claims that weren't independently verified MUST be marked as not verified by the orchestrator in the Verification Log, even where the agent tagged them `DIRECT_FETCH`.
 
 ### What this does NOT require
-- Verifying every single claim (only top 3-5 by decision impact, per lane when the synthesis compares lanes - Step 2b)
+- Verifying every single claim (only top 3-5 by decision impact, plus what brings every lane to its minimum when the synthesis compares lanes - Step 2b)
 - Re-running agent searches (use different queries/approaches)
 - Blocking synthesis on unverifiable claims (flag them, don't block)
 

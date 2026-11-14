@@ -38,7 +38,7 @@ Collect before starting. If any required one is missing, prompt one by one (use 
 |---|---|---|---|
 | `project_name` | yes | none | e.g. "acme-ops" |
 | `project_description` | yes | none | 1 line: what it does, which decision/output it serves, who consumes |
-| `stakeholder` | yes | none | e.g. "Name (Role)" or the business/owner. A pronoun ("me", "you", "tú", "yo") or a value under three characters is not a stakeholder: ask again (step 1) |
+| `stakeholder` | yes | none | e.g. "Name (Role)" or the business/owner. A pronoun, or a value too short to name anyone, is not a stakeholder: ask again (step 1) |
 | `project_type` | yes | none | `build` (code, data pipeline, automation, BI artifact, API), `research` (answer a question from sources) or `advisory` (weigh options, recommend a course). A mixed project takes the type of most of its work. It picks the starting defaults in `system/agent-orchestration.md` sec 7 |
 | `tier` | no | `build` when `project_type` is `build`, else `core` | which roles are copied. `core`: fidelity-verifier, domain-analyst, adversarial-reviewer, web-researcher, extractor. `build`: those plus executor and operator. Everything else (method docs, living docs, hooks) is the same in both tiers |
 | `dest` | yes | none | absolute path of the new project |
@@ -54,7 +54,7 @@ Collect before starting. If any required one is missing, prompt one by one (use 
 - **Resolve `bundle_path`**: (1) explicit arg; (2) read `~/.claude/agent-ops-home.txt` (written by `setup.ps1`); (3) ask. A denied Read is not a missing file: if reading the user profile is refused (`blockReadsOutsideWorkingDirectories`), ask for the kit path or `/add-dir`. If the file is truly missing, or the recorded path no longer exists (kit moved), tell the user to re-run `setup.ps1`.
 - The bundle must contain: `CLAUDE.md.template`, `.gitignore`, `system/agent-orchestration.md`, `system/model-playbook.md`, `system/model-measurements.md`, `system/verification-contract.md`, `system/cross-validation-prompt.md`, `system/claude-md-guide.md`, `system/templates/research-template.md`, `system/templates/parallel-sessions-protocol.md`, `system/scripts/{check-docs.ps1,capture-agent-prompt.ps1,log-subagent-usage.ps1,check-closing-lines.ps1,settings.hooks.json}`, `agents/{executor,fidelity-verifier,domain-analyst,adversarial-reviewer,web-researcher,operator,extractor}.md` (all seven must be in the bundle whatever the tier), `docs-seed/{lessons-learned.md.seed,status.md.template,scratchpad.md.template,decisions.md.template,dev-changelog.md.template,cerebrate-log/README.md}`. If any missing -> ABORT listing what's missing.
 - `dest`: empty or doesn't exist -> OK, clean scaffold. Non-empty with `allow_nonempty` false -> ABORT and ask. Non-empty with `allow_nonempty` true -> MERGE mode (never overwrite an existing file without explicit per-file confirmation).
-- `stakeholder`: if the value is a pronoun in any language ("me", "you", "I", "tú", "yo", "usted") or is shorter than three characters, ask again for a name and role (or the business/owner). A run accepted "tú" and wrote it into `CLAUDE.md` (observed 2026-11-13).
+- `stakeholder`: if the value is a pronoun in any language ("me", "you", "I", "tú", "yo", "usted") or is shorter than three characters, ask again for a name and role (or the business/owner). A short value the user then confirms (a team acronym such as "QA") is accepted. A run accepted "tú" and wrote it into `CLAUDE.md` (observed 2026-11-13).
 - Confirm the inputs with the user (especially `dest`, `project_type`, `stakeholder` and `domain`). No step below runs until the user confirms.
 
 ### Step 2: create folder structure
@@ -89,7 +89,7 @@ for r in fidelity-verifier domain-analyst adversarial-reviewer web-researcher ex
 # tier build: also
 for r in executor operator; do cp "<bundle_path>/agents/$r.md" "<dest>/.claude/agents/"; done
 ```
-The roles become the project's checked-in agents: each pins its tools, model and effort, so they are invoked by name. **They are not dispatchable in the session that copied them.** Observed 2026-11-13 (one machine, one Claude Code build): seven dispatches of `web-researcher`, several turns after the copy, failed with "Agent type not found"; the roles appeared only after the session was resumed. Tell the user to start a new Claude Code session in `<dest>` before the first dispatch (step 8). Do not fall back to a general-purpose agent given the role file for `web-researcher` (`agent-dispatch`, *Where those docs live*). A `core` project that later needs `executor` or `operator` copies the two files from the kit; the hooks already know their names, and a role that is not installed is simply never matched.
+The roles become the project's checked-in agents: each pins its tools, model and effort, so they are invoked by name. **Expect them not to be dispatchable in the session that copied them.** Observed 2026-11-13 (one machine, one Claude Code build): seven dispatches of `web-researcher`, several turns after the copy, failed with "Agent type not found"; the roles appeared after the session was resumed. A fresh session was not tried, nor reloading through `/agents`, and other builds may behave differently. Tell the user to start a new Claude Code session in `<dest>` (or resume this one) before the first dispatch (step 8). Do not fall back to a general-purpose agent given the role file for `web-researcher` (`agent-dispatch`, *Where those docs live*). A `core` project that later needs `executor` or `operator` copies the two files from the kit; the hooks already know their names, and a role that is not installed is simply never matched.
 
 ### Step 5: seed the living governance docs (docs/)
 ```bash
@@ -134,7 +134,7 @@ git -C "<dest>" commit -m "chore: bootstrap <project_name> from agent-ops"
 Else: tell the user they can `git init` later.
 
 ### Step 8: summary report
-Print: `dest`, files/folders created (with line counts), the project type and tier, which domain (if any) was applied, git status, and next steps: **start a new Claude Code session in `<dest>` before dispatching any role** (the roles copied in step 4b load at session start, step 4b), review the *Environment* block of `CLAUDE.md` (it ships with conservative defaults - edit it to where this project runs), propose a working configuration at kickoff (`system/agent-orchestration.md` sec 2) and record it in `docs/status.md`, build out the domain folders, first real work.
+Print: `dest`, files/folders created (with line counts), the project type and tier, which domain (if any) was applied, git status, and next steps: **start a new Claude Code session in `<dest>` (or resume this one) before dispatching any role** (step 4b), review the *Environment* block of `CLAUDE.md` (it ships with conservative defaults - edit it to where this project runs), propose a working configuration at kickoff (`system/agent-orchestration.md` sec 2) and record it in `docs/status.md`, build out the domain folders, first real work.
 
 ## Failure modes
 | Failure | Symptom | Mitigation |
