@@ -1,6 +1,6 @@
 ---
 doc_type: template
-purpose: Research Document Template v2.4 - agentic-first schema, Provenance x Confidence, Research Prompt Prefix block.
+purpose: Research Document Template v2.5 - agentic-first schema, Provenance x Confidence, Research Prompt Prefix block.
 audience: [agents, humans]
 when_to_use:
   - Writing any research doc
@@ -16,7 +16,7 @@ related_docs:
   - system/agent-orchestration.md sec 5 - Research verification gate
 ---
 
-# Research Document Template v2.4
+# Research Document Template v2.5
 
 > Agentic-first template for multi-agent research. Designed so subagents follow the schema
 > with minimal drift, so orchestrator verification is auditable, and so traceability via URLs
@@ -24,9 +24,10 @@ related_docs:
 >
 > Mandatory sections marked (M). Optional sections marked (O).
 >
-> **Version:** 2.4 | **Created:** 2026-04-02 | **Updated:** 2026-11-10
+> **Version:** 2.5 | **Created:** 2026-04-02 | **Updated:** 2026-11-14
 >
 > **Changelog:**
+> - v2.5 (2026-11-14): header field *Disclosed bias and asymmetry* and a per-lane tally in the Verification Log (verification allocation, `system/agent-orchestration.md` sec 5 Step 2b); the Research Prompt Prefix names documentation pages that address agents as untrusted instructions; new section *Raw-page verification recipe*.
 > - v2.4 (2026-11-10): the untrusted-content block says what wrapping does and does not do (it lowers the risk of hijacking, it does not remove it); the limit on damage is the researcher's tool list and its missing project context.
 > - v2.3 (2026-11-10): the Research Prompt Prefix gains *How the web tools behave* (a fetch answers an extraction prompt, long pages come in parts, a repeat fetch is the cached copy, redirects are reported, search returns titles and URLs, searches are a shared budget); `SEARCH_INDEX` redefined to match; new section *What the web tools do* with the dated numbers; research at scale points at workflows.
 > - v2.2 (2026-06-06): Return size (distilled) section added to the Research Prompt Prefix - subagents return ~1,000-2,000 token distilled summaries, schema rows + falsified_by prioritized over prose.
@@ -46,7 +47,8 @@ related_docs:
 **Method:** {Brief: e.g., "Multi-agent fan-out (4 subagents) -> orchestrator synthesis -> orchestrator verification"} (M)
 **Scope:** {What was investigated and what was explicitly out of scope} (M)
 **Decision context:** {What decision(s) will this research inform?} (O, recommended for FULL SYSTEM)
-**Template version used:** v2.3
+**Disclosed bias and asymmetry:** {The model that orchestrated and its maker; any option or lane that belongs to that maker, or to anyone else the orchestrator has a tie to; the per-lane count of orchestrator-verified claims, copied from the Verification Log tally, and whether any lane fell below the minimum} (M when the report compares options, vendors or lanes)
+**Template version used:** v2.5
 
 ---
 
@@ -135,8 +137,8 @@ related_docs:
 
 ## Verification Log (M for VERIFIED and FULL SYSTEM modes)
 
-<!-- Mandatory per Agent System sec 5 (system/agent-orchestration.md). Orchestrator re-verifies top 3-5 claims by impact,
-     directly (never delegated). -->
+<!-- Mandatory per Agent System sec 5 (system/agent-orchestration.md). Orchestrator re-verifies top 3-5 claims by impact
+     (per lane, when the report compares lanes), directly (never delegated). -->
 
 ### Claims triaged for verification
 
@@ -145,6 +147,16 @@ related_docs:
 | 1 | {claim} | DIRECT_FETCH (agent) | Re-fetched {url}, compared | CONFIRMED | [{source}]({url}) | N |
 
 **Escalated:** Y/N. Set to Y when stakes crossed a risk threshold (see "Risk-Escalated Verification" in `system/agent-orchestration.md` sec 5) and the orchestrator did a second independent pass.
+
+### Tally by lane (M when the report compares options, vendors or lanes)
+
+<!-- Verification allocation, system/agent-orchestration.md sec 5 Step 2b. Set the minimum BEFORE the pass,
+     the same for every lane. Verification depth is not merit: a ranking that follows the "Verified"
+     column rather than the evidence is the failure this table exists to expose. -->
+
+| Lane | Claims in the report | Verified by the orchestrator | Minimum set | Met? |
+|------|----------------------|------------------------------|-------------|------|
+| {option / vendor / lane} | {n} | {n} | {n} | Y / N - {what is short} |
 
 ### Not verified (passed through from agents)
 

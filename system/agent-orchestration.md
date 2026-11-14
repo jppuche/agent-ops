@@ -23,10 +23,10 @@ assumptions:
   - Subagents (Agent/Explore/Workflow) inherit web tools (WebFetch/WebSearch) when the harness exposes them; verified 2026-06-05
 ---
 
-# Agent Orchestration v0.16
+# Agent Orchestration v0.17
 
-**Last updated:** 2026-11-10 | **Version:** 0.16 (built on 0.15; the orchestrator is Opus or Fable; sec 2 opens with *When to evaluate the working configuration* - at kickoff and on six named events, silent otherwise; the 2x2 gains two side questions, wall-clock time and context load; sec 6 menu rebuilt on the vendor's five ways to run agents in parallel plus the advisor, forks and ultracode; sec 7 gate minimum stated with its scope and exception, and defaults by project type)
-**History:** versions 0.6 - 0.15 are in the kit's `CHANGELOG.md` (0.14 and 0.15, 2026-11-04, added the parallel-sessions channels, authority rules, *Who messages whom* and *Use cases* in sec 6).
+**Last updated:** 2026-11-14 | **Version:** 0.17 (built on 0.16; sec 5 gains Step 2b, *Verification allocation*: a synthesis that compares options, vendors or lanes sets a per-lane minimum of verified claims, tallies them per lane, discloses the orchestrator's vendor, and does not let verification depth pass for merit)
+**History:** versions 0.6 - 0.16 are in the kit's `CHANGELOG.md` (0.16, 2026-11-10: the orchestrator is Opus or Fable, *When to evaluate the working configuration*, the rebuilt sec 6 menu, sec 7 defaults by project type; 0.14 and 0.15, 2026-11-04, added the parallel-sessions channels, authority rules, *Who messages whom* and *Use cases* in sec 6).
 
 ## TL;DR
 
@@ -237,11 +237,20 @@ For each triaged claim, verify independently (NOT by re-reading the agent's outp
 - Feature claim? -> Fetch README or docs directly
 - Document what was checked and the result (confirmed / corrected / unverifiable)
 
+**Step 2b - Verification allocation (a synthesis that compares options, vendors or lanes):**
+Before writing a synthesis that compares or ranks options, vendors or lanes (a "lane" is one of the things compared, with the claims about it):
+- **Set a per-lane minimum** of orchestrator-verified deciding claims before verifying, the same for every lane (e.g. 2-3 each). The top 3-5 of Step 1 are then picked per lane, not overall.
+- **Count the verified claims per lane** when the pass is done, and put the tally in the Verification Log. A lane below the minimum is either verified up to it or marked short, next to the ranking.
+- **Disclose the orchestrator's vendor**: name the model that orchestrated and its maker, and any lane that belongs to that maker (or to anyone else the orchestrator has a tie to). It goes in the report header (*Disclosed bias and asymmetry*).
+- **Verification depth is not merit.** A lane with more verified claims looks stronger because it was checked more, not because it is better. No ranking may rest on a difference in how deeply each lane was verified; where the tallies differ, the ranking says so.
+
+Origin (2026-11-14, observed once): a landscape report whose orchestrator verified 6 of its 12 claims in its own maker's lane ranked that lane's option first. A fresh reviewer traced the ranking to verification depth, not evidence; the corrective round set a per-lane minimum and inverted the asymmetry. Checking your own maker's docs is the easiest verification to reach for (they are the docs you know best), which is why the minimum is set before the pass, not after.
+
 **Step 3 - Write synthesis with verification log:**
 Use the Research Document Template (`system/templates/research-template.md`). The Verification Log section is mandatory, not optional. Claims that weren't independently verified MUST be marked as not verified by the orchestrator in the Verification Log, even where the agent tagged them `DIRECT_FETCH`.
 
 ### What this does NOT require
-- Verifying every single claim (only top 3-5 by decision impact)
+- Verifying every single claim (only top 3-5 by decision impact, per lane when the synthesis compares lanes - Step 2b)
 - Re-running agent searches (use different queries/approaches)
 - Blocking synthesis on unverifiable claims (flag them, don't block)
 
@@ -249,6 +258,7 @@ Use the Research Document Template (`system/templates/research-template.md`). Th
 - Treating agent source tags as orchestrator verification (they're not)
 - Verifying only positives (negations are more dangerous when wrong)
 - Skipping the gate because "the agents were thorough" (that's the exact failure mode)
+- Verifying most where it is easiest - often the orchestrator's own maker's docs - and then ranking that lane first (Step 2b)
 
 ### Agent Output Schema (mandatory)
 

@@ -8,7 +8,7 @@ Agnostic by design - it validates the 6-doc governance layer any agent-ops insta
 
 - **Structure**: required docs present (CLAUDE.md, the 5 living docs, the core `system/` method docs).
 - **Broken refs**: markdown links to local files that don't exist (skips URLs, anchors, `<placeholders>`).
-- **Stale dates**: frontmatter `last_verified` older than the file's last git commit.
+- **Stale dates**: frontmatter `last_verified` older than the last commit that **modified** the file (`git log --diff-filter=M`). A commit that only added it does not count, so a fresh bootstrap, which adds every kit doc with the kit's older dates, starts with no stale warnings. Copying a newer kit doc over an instance's copy is a modification: if the kit's date is older than that commit, the doc is reported, and the right answer is to re-read it, not to stamp it.
 - **Freshness**: `status.md` / `dev-changelog.md` not updated despite commits today.
 - **Bootstrap**: leftover `[PROJECT_NAME]` placeholders.
 

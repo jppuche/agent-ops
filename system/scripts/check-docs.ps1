@@ -15,7 +15,9 @@
   Checks:
     1. Structure    - required governance files present.
     2. Broken refs  - markdown links to local files that don't exist (skips URLs/anchors/placeholders).
-    3. Stale dates  - frontmatter last_verified older than the file's last git commit date.
+    3. Stale dates  - frontmatter last_verified older than the date of the last commit that MODIFIED
+                      the file. A commit that only added it (the bootstrap copy of a kit doc, which
+                      carries the kit's own date) does not count: the date was true when copied.
     4. Freshness    - status.md / dev-changelog.md not updated despite commits today.
     5. Bootstrap    - leftover [PROJECT_NAME] placeholders in live docs.
   report mode also echoes the status.md "Active work" section (re-anchors the agent).
@@ -23,7 +25,7 @@
 .PARAMETER Mode
   report (default) - print findings, exit 0.
   gate             - print findings, exit 2 if any ERROR (blocks a pre-commit hook).
-  fix              - auto-stamp stale last_verified to the file's last commit date; print the rest.
+  fix              - auto-stamp stale last_verified to the file's last modifying commit date; print the rest.
                      The stamp asserts a verification nobody ran: use it only after re-reading the doc.
 
 .PARAMETER RepoRoot
@@ -48,6 +50,19 @@ function Get-LastCommitDate([string]$fullPath) {
     try {
         $rel = $fullPath.Substring($RepoRoot.Length).TrimStart('\', '/')
         $d = git -C $RepoRoot log -1 --format=%cs -- "$rel" 2>$null
+        if ($LASTEXITCODE -eq 0 -and $d) { return $d.Trim() }
+    } catch {}
+    return $null
+}
+
+# Last commit that MODIFIED the file (--diff-filter=M): an add, a copy or a rename alone is not a
+# change of content. A freshly bootstrapped instance adds every kit doc in one commit dated today,
+# while each doc's last_verified is the kit's older date; against "any last commit" every one of them
+# reads as stale (8 warnings on a fresh bootstrap, observed 2026-11-13).
+function Get-LastModifyDate([string]$fullPath) {
+    try {
+        $rel = $fullPath.Substring($RepoRoot.Length).TrimStart('\', '/')
+        $d = git -C $RepoRoot log -1 --diff-filter=M --format=%cs -- "$rel" 2>$null
         if ($LASTEXITCODE -eq 0 -and $d) { return $d.Trim() }
     } catch {}
     return $null
@@ -106,7 +121,7 @@ foreach ($f in $mdFiles) {
     }
 }
 
-# --- 3. Stale last_verified vs git ---
+# --- 3. Stale last_verified vs the file's last modifying commit ---
 if ($isGit) {
     foreach ($f in $mdFiles) {
         $head = Get-Content -LiteralPath $f.FullName -Encoding UTF8 -TotalCount 25
@@ -114,7 +129,7 @@ if ($isGit) {
         if (-not $line) { continue }
         $declared = ($line -replace '^last_verified:\s*', '').Trim()
         if ($declared -notmatch '^\d{4}-\d{2}-\d{2}$') { continue }  # YYYY-MM-DD placeholder -> skip
-        $committed = Get-LastCommitDate $f.FullName
+        $committed = Get-LastModifyDate $f.FullName
         if ($committed -and ($declared -lt $committed)) {
             if ($Mode -eq 'fix') {
                 $raw = Get-Content -LiteralPath $f.FullName -Encoding UTF8 -Raw
@@ -122,7 +137,7 @@ if ($isGit) {
                 [System.IO.File]::WriteAllText($f.FullName, $raw)
                 $fixed.Add("$($f.Name): last_verified $declared -> $committed")
             } else {
-                $warns.Add("stale last_verified in $($f.Name): $declared < last commit $committed")
+                $warns.Add("stale last_verified in $($f.Name): $declared < last modified $committed")
             }
         }
     }

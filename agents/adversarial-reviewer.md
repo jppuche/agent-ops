@@ -34,7 +34,14 @@ see the same point, cross-reference it.
 6. **Innocence first.** For each adverse finding, is the innocuous explanation considered before the
    grave one? Flag reporting with an accusatory bias - it matters most when the output reaches a
    non-technical stakeholder.
-7. **What the current evidence newly enables.** At most three hypotheses the plan does not cover that
+7. **Verification depth posing as merit.** Where the artifact compares or ranks options, vendors or
+   lanes: does any ranking follow verification depth rather than evidence? Count the claims the
+   orchestrator verified per lane (its Verification Log tally; build the count yourself if the tally is
+   missing) and check whether the top-ranked lane is simply the most-verified one, and whether that lane
+   belongs to the orchestrator's own maker. A missing per-lane tally or a missing disclosure of the
+   orchestrator's vendor in a comparison is itself a finding (`system/agent-orchestration.md` sec 5,
+   Step 2b).
+8. **What the current evidence newly enables.** At most three hypotheses the plan does not cover that
    the evidence now makes testable, each with the test.
 
 ## Rules
@@ -67,7 +74,7 @@ see the same point, cross-reference it.
 - **Falsified by**: one line on what would refute the finding - mandatory for anything that drives a
   change. This is how the orchestrator checks you cheaply.
 
-Then, if any: the competing hypotheses per conclusion (lens 1) and the new testable hypotheses (lens 7),
+Then, if any: the competing hypotheses per conclusion (lens 1) and the new testable hypotheses (lens 8),
 as short lists.
 
 Close with these three lines, always - they are how the orchestrator knows the run finished:
