@@ -54,7 +54,7 @@ Each project can define what implicit signals Cerebrate should watch for beyond 
 
 - **Product project:** "Did this session reveal user needs not captured in the PRD?"
 - **Research project:** "Did findings challenge or confirm the hypothesis?"
-- **BI project:** "Did this session graduate a pattern worth adding to LESSONS-LEARNED?"
+- **Data project:** "Did this session graduate a pattern worth adding to LESSONS-LEARNED?"
 - **Open source project:** "Did this session produce patterns useful for CONTRIBUTING.md?"
 
 If no domain signals are configured, Cerebrate harvests standard explicit + implicit knowledge only.

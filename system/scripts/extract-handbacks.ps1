@@ -237,7 +237,7 @@ foreach ($s in $sessions) {
             "     session: $($s.Name)  agent: $agentId",
             "     agent_type: $atype  description: $desc",
             "     model: $($meta.model)  effort: $($meta.effort)",
-            "     transcript: ~/.claude/projects/$(Split-Path $TranscriptRoot -Leaf)/$($s.Name)/subagents/$($f.Name)",
+            "     transcript: ~/.claude/projects/<project-slug>/$($s.Name)/subagents/$($f.Name)",
             "     redactions in this agent's files: $red (shape-based; review before sharing)  unparsable lines skipped: $badLines -->",
             ''
         ) -join "`n"

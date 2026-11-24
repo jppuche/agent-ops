@@ -13,7 +13,7 @@
 #>
 $ErrorActionPreference = 'SilentlyContinue'
 try {
-    $raw = (New-Object System.IO.StreamReader([Console]::OpenStandardInput(), (New-Object System.Text.UTF8Encoding $false))).ReadToEnd()  # hook input is UTF-8; [Console]::In would decode it with the OEM code page (850 here) and corrupt every accent
+    $raw = (New-Object System.IO.StreamReader([Console]::OpenStandardInput(), (New-Object System.Text.UTF8Encoding $false))).ReadToEnd()  # hook input is UTF-8; [Console]::In would decode it with the console's legacy OEM code page and corrupt every accent
     if (-not $raw) { exit 0 }
     $j = $raw | ConvertFrom-Json
     if ($j.tool_name -ne 'Agent' -and $j.tool_name -ne 'Task') { exit 0 }

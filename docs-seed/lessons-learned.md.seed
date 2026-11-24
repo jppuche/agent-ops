@@ -47,7 +47,7 @@ Format for each entry:
   - **Apply when**: "X is the cause" fits the one case you have. Find a case in a different state/period/entity that would falsify it if false.
 
 - **ROOT PATTERN - a claim read off structure is a hypothesis until the data or the reference frame is checked**
-  - **Why**: a field case, four errors in one session with one cause: a filter sweep that matched only some condition types and missed a saved range hiding part of the data; two elements identical in position assumed interchangeable when only one carried a cross-page link; a lint warning dismissed by measuring against the wrong container; a grouping level recommended without counting its distinct values. In every case the file was read correctly and the conclusion was still wrong - structure was treated as meaning.
+  - **Why**: a field case, four errors in one session with one cause: a filter sweep that matched only some condition types and missed a saved filter hiding part of the data; two elements identical in position assumed interchangeable when only one carried a link; a lint warning dismissed by measuring against the wrong container; a grouping level recommended without counting its distinct values. In every case the file was read correctly and the conclusion was still wrong - structure was treated as meaning.
   - **Apply when**: about to state what a system *does* from what its files *say*. Ask: what would the data have to look like for this to be true, and against which reference frame is this measured? Both are usually one query or one grep away.
 
 - **ROOT PATTERN, second family - a copy is not its source: re-read the primary before you assert from a summary, a paraphrase, a cached context, a check's output or a label**
@@ -75,7 +75,7 @@ Format for each entry:
   - **Apply when**: adding or cutting a verification step. Keep it if it uses a different source or a different reasoner (a cold reviewer); cut "double-check your work" boilerplate. Full reasoning: `system/model-playbook.md` section 5.
 
 - **Check the `falsified_by` field before acting on a finding**
-  - **Why**: a vision reviewer reported a whole table rendering at 1.05:1 contrast, "unreadable", and honestly wrote the falsifier - "re-capture after the visual finishes its query". A fresh capture measured the same text at 18:1; the first capture had caught the visual mid-query fade-in. Acting on the finding would have meant hunting a colour bug that did not exist.
+  - **Why**: a vision reviewer reported a whole table rendering at 1.05:1 contrast, "unreadable", and honestly wrote the falsifier - "re-capture after the view finishes loading". A fresh capture measured the same text at 18:1; the first capture had caught the view mid-load fade-in. Acting on the finding would have meant hunting a colour bug that did not exist.
   - **Apply when**: a finding would drive a change - above all vision findings about colour, contrast, blank or "missing" content, which capture timing produces. Run its `falsified_by` first; a finding whose falsifier fires is discarded, however confident it sounded.
 
 - **A check that cannot fail is not a check**
