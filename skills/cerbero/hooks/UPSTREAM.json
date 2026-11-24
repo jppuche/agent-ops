@@ -1,20 +1,20 @@
 {
   "source": "https://github.com/jppuche/Cerbero",
-  "version": "1.3.0",
-  "commit": "744dfa0faddccf6abddad3cc872872ac6ff8b87a",
+  "version": "1.3.1",
+  "commit": "be3f079212d76d084b440a3a7ca1e5b45dcbf4e3",
   "files": {
-    "cerbero-scanner.py": "0b82f8dbaf16ac1b19034af63b83e7b33453c86aaba3e49c88535f019fac42f2",
-    "mcp-audit.py": "6e0b1a45d6e88f52817dc0cb7515a087202d3cf4126534ce4df9c3e1ed0f98eb",
-    "pre-tool-security.py": "3e6eee74fce8e00a3c0adf2cac8b9024885db3340f8fb725ca0ebd515717012e",
+    "cerbero-scanner.py": "fce9cef91604354d37011e1d54d7aa1fa67532e4da2bbda959992261a2f70661",
+    "mcp-audit.py": "33a455efedb8acec9e669da646cc92a662c77a045874dc6ec53fbebd2a7cd243",
+    "pre-tool-security.py": "ded7d1366bd95af1313b460039ce4ce1d2559af86073eebd73ac43256d4491c9",
     "untrusted-source-reminder.py": "b4a11cb1064fb41b56b5ac198ac5f29c0906982b336a9917317753a817fa4053",
-    "validate-prompt.py": "b87c06ea8f39839103c9fc930807809af6a2d3d8a88a1ec2d52e28a3a4f86fb5",
-    "validate-tool-output.py": "f0058edaac21de178527790342ec1b3ba350d24e17af76cb1906ede093c3e8e6"
+    "validate-prompt.py": "ded9f96eb6671aaa78990d18f9043d712fd7fc8e9c75a1d42c5ba2fe928a9be8",
+    "validate-tool-output.py": "f18e028a7ac70f0e33f5700cd616bae6db46278ed0bbc16a481a5244ac15527d"
   },
   "docs": {
-    "SKILL.md": "c30012668074ca004e3593078e8e2939b1847a472e4ddc20e27c8e9a5c1fce65",
+    "SKILL.md": "dc518b444262310dee80908abaf8b1090601c7692a29c2e52b25a946129c9a85",
     "op-evaluate-mcp.md": "a858631f5807ca2986e6dcb3624ec53bda8e1b5647b633d760c991b788924d6b",
     "op-evaluate-skill.md": "c365d89c899d7e21d20bb1f9dad385d13e3ab5593629208fe702fd73a5d432be",
-    "op-full-audit.md": "793e0efb4721cb42fd385ac765f5ab2fd58937d96645a39cdf315daa69eecfa9",
+    "op-full-audit.md": "d4f744d31bbf856b7e025b5e4e3653f35c294fd315c41616b1c7a5e9d16109a5",
     "op-verify-existing.md": "554fca06a52c067d6018df0aa889126e45ceec07dca955ca88a3df4a213265aa",
     "setup-guide.md": "c3344bce03b1ee0189dbf97caa74011fb2adc673aebb0ed490b430e35b21680d",
     "trusted-publishers.txt": "7f5085598c52129053ffa8a1b69bcb1bcf8bbf327f96e5721f4846f5ac00887a"
