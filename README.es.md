@@ -1,6 +1,6 @@
 # agent-ops
 
-![version](https://img.shields.io/badge/version-v0.11.0-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
+![version](https://img.shields.io/badge/version-v0.12.0-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
 
 [Read in English](README.md) | [Changelog](CHANGELOG.md) | [Actualizar un proyecto (en inglés)](UPGRADING.md) | [Seguridad](SECURITY.md)
 
@@ -127,7 +127,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
 
 </details>
 
-**Qué versión recibes.** El clon sigue a `main`, que es lo que describe esta página. La última versión publicada, v0.11.0, es anterior a la ficha de planificación y a los chequeos de frescura. `main` avanza entre versiones, y la corrida semanal de mantenimiento del kit puede mergear actualizaciones de documentación en él (ver [Se mantiene al día](#se-mantiene-al-día)).
+**Qué versión recibes.** El clon sigue a `main`. Las versiones se publican con tag (la última es v0.12.0). `main` puede traer cambios listados como *Unreleased* en el changelog, y la corrida semanal de mantenimiento del kit puede mergear actualizaciones de documentación en él (ver [Se mantiene al día](#se-mantiene-al-día)). Para quedarte en una versión, cambia a su tag: `git -C "$HOMEgent-ops" checkout v0.12.0`.
 
 ### Cómo queda un proyecto nuevo
 
