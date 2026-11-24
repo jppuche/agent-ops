@@ -92,7 +92,7 @@ Edit the kit for every change that is not *no impact*.
 - **CHANGELOG**: one bullet under `## Unreleased` when kit content changed, saying what changed and
   why. **UPGRADING**: only when an instance has to copy a file or will see different behaviour; then
   add the file to the copy list in *Changes after ... (unreleased)*. A run that only advances markers
-  writes neither.
+  writes neither. Where either section holds only `(nothing yet)`, replace that line.
 - Keep `README.es.md` in step if you touch `README.md`.
 
 Then advance the markers with the detector's own output, unedited:

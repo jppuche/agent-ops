@@ -4,6 +4,10 @@ A project created with `/init-project` is a snapshot of the kit at that moment. 
 
 Paths below are relative to the kit clone (source) and to the instance (destination). "Re-run `setup.ps1`" means in the kit clone; it reinstalls the four user-level skills.
 
+## Changes after v0.12.0 (unreleased)
+
+(nothing yet)
+
 ## Instances created before v0.12.0
 
 Copy into the instance: `system/agent-orchestration.md`, `system/model-playbook.md`, `system/model-measurements.md`, `system/cross-validation-prompt.md`, `system/claude-md-guide.md`, `system/scripts/check-docs.ps1`, `system/scripts/README.md`, `system/templates/parallel-sessions-protocol.md` and `system/templates/research-template.md` into its `system/`; `agents/web-researcher.md` into its `.claude/agents/`, then start a new session before dispatching it. Re-run `setup.ps1`.
