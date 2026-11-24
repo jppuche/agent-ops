@@ -27,7 +27,7 @@ system/                            agnostic methodology - does NOT change per pr
                                    extract / list); a build-tier project also has executor and operator
                                    (a core project that needs one copies it from the kit's agents/)
 docs/                              living governance - edited as you work
-  status.md (auto-loaded)  scratchpad.md  lessons-learned.md   <- read at session start
+  status.md (auto-loaded)  scratchpad.md (on resume)  lessons-learned.md (before acting on a pattern)
   decisions.md  dev-changelog.md
   cerebrate-log/                   lossless session reflections
 [DOMAIN_STRUCTURE]
@@ -67,7 +67,7 @@ docs/                              living governance - edited as you work
 
 ## Working configuration
 
-How this project gets its work done is a decision, recorded under *Working configuration* in `docs/status.md`. Propose one when the project or a new workstream starts, with the reason and what it costs against the alternative; "one session, no agents" is a valid answer. Re-check it only on the events in `system/agent-orchestration.md` sec 2 (a plan larger than one session or with a costly-to-undo step about to run, an assumption that broke, an irreversible action next, two failed attempts, a compacted or nearly full context, the close of a block). When the configuration still fits, say nothing about it - except before an irreversible or outward-facing action whose gate has not run: always say that. The default answer is one session; this section asks a question, it does not ask for delegation.
+How this project gets its work done is a decision, recorded under *Working configuration* in `docs/status.md`: one session at the main model's default effort until a task calls for more. When one does, propose the card that file defines (vehicle; main session model and effort; each worker's count, role, model, effort and scope; gate; advisor; cost against the alternative), with the reason. A task a handful of tool calls settles and that is easy to undo gets no proposal: do it. Re-check the configuration only on the events in `system/agent-orchestration.md` sec 2 (a plan larger than one session or with a costly-to-undo step about to run, an assumption that broke, an irreversible action next, two failed attempts, the close of a block). When the configuration still fits, say nothing about it - except before an irreversible or outward-facing action whose gate has not run: always say that. The default answer is one session; this section asks a question, it does not ask for delegation.
 
 ## Environment (what this project may spend and use)
 
@@ -76,9 +76,9 @@ Edit these lines to fit where the project runs. An option this block rules out s
 - **Billing**: the subscription plan's included limits only. Nothing that bills usage credits or API tokens runs without the stakeholder's go-ahead for that specific use. A `-p` run or an Agent SDK app shows no consent prompt and bills Fable to credits silently: dispatch `fable` there only with that go-ahead
 - **API credits**: none assumed. If the plan includes API credits, write here the monthly amount, what they cover, what happens at zero (requests stop, or bill a payment method) and who may spend them; until this line says so, nothing spends them
 - **Plan facts** (plan name, limits, credits): confirm each on the vendor's plan or pricing page, with the date read, before writing it on these lines. A stakeholder's first statement of the plan was corrected later in one project (observed 2026-11-13)
-- **Advisor** (`/advisor`): allowed only where it draws on the plan's limits. A Fable advisor is ruled out while the `/model` picker marks the Fable row "Requires usage credits". You cannot see that picker: ask the stakeholder once and write the answer on this line
+- **Advisor** (`/advisor`): allowed only where it draws on the plan's limits. A Fable advisor is ruled out while the `/model` picker marks the Fable row "Requires usage credits". You cannot see that picker: ask the person running the session once and write the answer on this line
 - **Fast mode, cloud sessions, scheduled cloud agents**: ask first (they bill or run outside this machine)
-- **Large fan-outs** (a workflow, an agent team, ultracode): say what it would cost against the plan's limits and get a go-ahead before starting one
+- **Large fan-outs** (a workflow, an agent team, ultracode, or more than five agents at once): say what it would cost against the plan's limits and get a go-ahead before starting one
 
 ## Docs routing (when asked to "update docs" / "checkpoint")
 
@@ -121,4 +121,4 @@ The `cerebrate` skill (close of a significant block/session) reads these:
 
 ## Scratchpad
 
-`docs/scratchpad.md` - session log (append-only, <150 lines). Read at session start, append at close. **Not** auto-imported: it changes every session, and auto-loading a daily log each time spends context for little gain (read it on demand).
+`docs/scratchpad.md` - session log (append-only, <150 lines). Read it when you resume work, append at close. **Not** auto-imported: it changes every session, and auto-loading a daily log each time spends context for little gain (read it on demand).

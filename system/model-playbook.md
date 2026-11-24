@@ -22,7 +22,7 @@ freshness_check: The lineup changed four times in seven weeks (Opus 5.5 on 2026-
 
 # Model + Effort Playbook
 
-**Last re-verified 2026-11-10** against the vendor pages listed under [Sources](#sources), each read raw.
+**Last re-verified 2026-11-24** against the vendor pages listed under [Sources](#sources), each read raw.
 What was re-read on each date, and every measurement behind a **measured** row, is in
 `system/model-measurements.md`. The kit has measured nothing on Fable 5.2: every Fable row is vendor
 guidance or the kit's inference.
@@ -122,6 +122,24 @@ you build with?*, claude.dev, 2026-11-09]:
 
 Effort does not add knowledge or skill a model lacks; when that is what is missing, step 3 is the only
 one that helps.
+
+**What delegation buys, per model pair** [DOCS: *Optimizing for cost and intelligence*, sec *Orchestrator
+strategy*, read raw 2026-11-24; Anthropic-internal benchmarks, directional]. Delegation came out ahead
+only for routine work with a long cost tail and for work larger than one context window; one dependent
+chain, or work that fits in one context, did better on the orchestrator's model alone at a lower effort.
+On the work-larger-than-one-context benchmark: Opus 5.5 with Sonnet 5.5 subagents cost about a third
+less than one Opus 5.5 session per part at its default effort, at about the same score; Fable 5.2 as the
+orchestrator in Opus 5.5's place cost 19% more at about the same score. Haiku 5.5 subagents on a coding
+benchmark were an alternative to lowering effort, not better: added to Opus 5.5 at `medium`, they cut cost
+per attempt by 32% and the pass rate by about 4 points. So the usual card for bulk work that outgrows one
+context is an Opus orchestrator with Sonnet workers; Fable as the orchestrator is for the open-ended
+judgment below, not for the fan-out itself.
+
+**When a measured row's model is superseded** [PROJECT]. A **measured** row holds for the model id it was
+measured on. Once the alias moves to a newer model, the row's figures are history: treat the row as
+vendor guidance until it is re-measured, say so where it is used, and keep the alias (the older model
+retires on its own date). Pin the measured id instead only while it is still served and the decision
+hinges on the measured figure; re-measure before that id's retirement date (section 1).
 
 ### The orchestrator is Opus or Fable [DOCS + PROJECT]
 
