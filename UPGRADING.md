@@ -1,6 +1,6 @@
 # Upgrading an instance
 
-A project created with `/init-project` is a snapshot of the kit at that moment. `git pull` in the kit updates new projects only. To bring an existing instance forward, apply every note between its version and the current one, newest first. The full change history is in [CHANGELOG.md](CHANGELOG.md); each release there also ends with its own upgrade line.
+A project created with `/init-project` is a snapshot of the kit at that moment. `git pull` in the kit updates new projects only. To bring an existing instance forward, apply every note between its version and the current one. The notes below are listed newest first: apply them oldest first, starting from your project's version (recorded in its `docs/status.md` `Kit:` line; a project made before that line existed matches its creation date against `CHANGELOG.md`). The full change history is in [CHANGELOG.md](CHANGELOG.md); each release there also ends with its own upgrade line.
 
 Paths below are relative to the kit clone (source) and to the instance (destination). "Re-run `setup.ps1`" means in the kit clone; it reinstalls the four user-level skills.
 

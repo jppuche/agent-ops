@@ -261,3 +261,11 @@ What the runs show, and no more than that:
 Not measured: the role as installed (its tool allowlist and `omitClaudeMd`; a role file cannot be loaded
 mid-session in the kit repo), real `WebFetch` against hostile pages (it refuses `localhost`), adaptive or
 repeated attacks, any model outside the three aliases, more than one run per cell.
+
+## Kit-level test: does the kit lead an agent to a configuration (2026-11-24)
+
+An independent reviewer (a Fable main session) gave the same three tasks to subagents acting as the main session of a fresh instance: a 6-file rename, a comparison of options, a migration that warrants parallel sessions. Each ran on `haiku`, `sonnet` and `opus` and was scored against a key written before the runs. Fixtures and scorers are not published: the figures are a report.
+
+- **Round 1** (kit at `45829ab`): one run per cell (9), plus one run without the kit (`sonnet`) and one later-model probe (`opus`). Vehicle and count right in 6 of 6 multi-agent runs; model and effort per worker named in 0 of 6; the rename turned into a proposal with questions in 3 of 3; 102K to 137K tokens per decision against 57K without the kit. The run without the kit named every effort, from memory, and the vendor guidance read the same day contradicts them.
+- **Round 2** (kit at `a8be75d`, after the configuration card and the size threshold): two runs per cell (18); the no-kit run was not repeated. The rename was done directly in 6 of 6; model and effort per worker in 7 of 12 (`opus` 4 of 4, `sonnet` 3 of 4, `haiku` 0 of 4), a complete card in 6 of 12 against a pre-registered 10 of 12; main-session effort named in 11 of 12; vehicle and count right in 12 of 12. Tokens over the round-1 no-kit run: 42K on average (55K in round 1). A complete card followed loading the `agent-dispatch` skill (6 of 7 runs that loaded it, 1 of 5 that did not).
+- **Not measured**: real sessions instead of subagents, the hooks running, the model and effort each run actually used (passed on the call, not read back from the transcript), more than two runs per cell.
