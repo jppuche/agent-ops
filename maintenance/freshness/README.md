@@ -66,7 +66,8 @@ The markers advance only by merging, so nothing is lost by leaving one open; it 
 - **No connectors** are attached to the task, and it gets no web tools: the detector is the only
   reader of the network.
 - **Notifications**: the session acts with the maintainer's GitHub identity, so GitHub sends no email
-  for its pull requests or issues. Check the task's history or the repository.
+  for its pull requests or issues. When something needs a person, the run sends one push notification
+  through the Claude app if that tool is available; otherwise check the task's history or the repository.
 
 ## Limits worth knowing
 
@@ -77,3 +78,8 @@ The markers advance only by merging, so nothing is lost by leaving one open; it 
 - A parser that stops matching (the vendor changed a page's layout) makes that source "not read". It
   does not pass as "no changes".
 - Scheduled tasks are a research preview: limits and behaviour can change.
+- The cloud proxy cannot delete branches, so each run's `claude/kit-freshness-<date>` branch stays on
+  the remote after its merge unless the repository deletes head branches automatically.
+- First run, 2026-11-24: 92 seconds from start to merged pull request for a markers-only change. The
+  session's permission classifier refused a `git reset --hard` in the preflight, which is why the
+  procedure now only checks that the checkout is clean.

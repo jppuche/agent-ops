@@ -30,10 +30,13 @@ prompt wins.
 ### 0. Preflight
 
 ```bash
-git fetch origin && git checkout "$BASE" && git reset --hard "origin/$BASE"
+git fetch origin && git checkout "$BASE" && git status --short && git rev-parse HEAD "origin/$BASE"
 gh api "repos/$REPO/pulls?state=open&per_page=100" \
   --jq '.[] | select(.head.ref | startswith("claude/kit-freshness-")) | "\(.number) \(.head.ref)"'
 ```
+
+The checkout must be clean and at the tip of `origin/$BASE` (the two hashes equal). If it is not, stop and
+say so: do not reset or discard anything.
 
 `gh pr` and `gh issue` are refused in cloud sessions (GraphQL); use `gh api` on the REST endpoints
 throughout.
@@ -159,3 +162,7 @@ The body: the detector's `NOT READ` lines, verbatim, and the date. Markers do no
 
 Three lines at most: what the detector reported, the pull request and whether it merged (or why not),
 and what was not read.
+
+When something needs a person (a source not read, a pull request left open, a blocked action) and a
+push-notification tool is available, send one notification: counts and the pull request number only,
+no names and no quoted page text.
