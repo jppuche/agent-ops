@@ -20,6 +20,10 @@
                       carries the kit's own date) does not count: the date was true when copied.
     4. Freshness    - status.md / dev-changelog.md not updated despite commits today.
     5. Bootstrap    - leftover [PROJECT_NAME] placeholders in live docs.
+    6. Kit freshness - warnings only: model facts (system/model-playbook.md last_verified) older than
+                      45 days by the calendar; the master kit (path in ~/.claude/agent-ops-home.txt) ahead
+                      of the commit stamped in docs/status.md; installed user-level skills that differ
+                      from the kit's (re-run setup.ps1).
   report mode also echoes the status.md "Active work" section (re-anchors the agent).
 
 .PARAMETER Mode
@@ -162,11 +166,57 @@ if ($isGit) {
 foreach ($live in @('CLAUDE.md', 'docs/status.md', 'docs/decisions.md', 'docs/dev-changelog.md')) {
     $p = Join-Path $RepoRoot $live
     if (Test-Path -LiteralPath $p) {
-        if ((Get-Content -LiteralPath $p -Encoding UTF8 -Raw) -match '\[PROJECT_NAME\]|\[PROJECT_TYPE\]') {
-            $warns.Add("$live still has a [PROJECT_NAME] or [PROJECT_TYPE] placeholder (bootstrap incomplete)")
+        if ((Get-Content -LiteralPath $p -Encoding UTF8 -Raw) -match '\[PROJECT_NAME\]|\[PROJECT_TYPE\]|\[KIT_VERSION\]|\[KIT_COMMIT\]') {
+            $warns.Add("$live still has a [PROJECT_NAME], [PROJECT_TYPE] or [KIT_*] placeholder (bootstrap incomplete)")
         }
     }
 }
+
+# --- 6. Kit freshness (warnings only; any failure here is skipped, never fatal) ---
+try {
+    $maxFactAgeDays = 45
+    $pb = Join-Path $RepoRoot 'system/model-playbook.md'
+    if (Test-Path -LiteralPath $pb) {
+        foreach ($ln in (Get-Content -LiteralPath $pb -Encoding UTF8 -TotalCount 25)) {
+            if ($ln -match '^last_verified:\s*(\d{4}-\d{2}-\d{2})') {
+                $age = ((Get-Date).Date - [datetime]::ParseExact($Matches[1], 'yyyy-MM-dd', $null)).Days
+                if ($age -gt $maxFactAgeDays) {
+                    $warns.Add("model facts are $age days old (system/model-playbook.md last_verified $($Matches[1])): re-verify its sec 1 against the vendor pages before trusting a staffing row")
+                }
+                break
+            }
+        }
+    }
+    $homeFile = Join-Path (Join-Path $env:USERPROFILE '.claude') 'agent-ops-home.txt'
+    $st = Join-Path $RepoRoot 'docs/status.md'
+    if ((Test-Path -LiteralPath $homeFile) -and (Test-Path -LiteralPath $st)) {
+        $kit = ([System.IO.File]::ReadAllText($homeFile)).Trim()
+        if ($kit -and (Test-Path -LiteralPath (Join-Path $kit '.git'))) {
+            $stamp = $null
+            foreach ($ln in (Get-Content -LiteralPath $st -Encoding UTF8 -TotalCount 15)) {
+                if ($ln -match '^Kit:.*commit ([0-9a-f]{7,40})') { $stamp = $Matches[1]; break }
+            }
+            if ($stamp) {
+                $ahead = (git -C $kit rev-list --count "$stamp..HEAD" 2>$null)
+                if ($LASTEXITCODE -eq 0 -and [int]$ahead -gt 0) {
+                    $warns.Add("the master kit ($kit) is $ahead commit(s) ahead of this project's kit stamp: see its UPGRADING.md and CHANGELOG.md")
+                }
+            }
+            $skillsDir = Join-Path (Join-Path $env:USERPROFILE '.claude') 'skills'
+            $stale = @()
+            foreach ($sk in (Get-ChildItem -LiteralPath (Join-Path $kit 'skills') -Directory -ErrorAction SilentlyContinue)) {
+                $src = Join-Path $sk.FullName 'SKILL.md'
+                $dst = Join-Path (Join-Path $skillsDir $sk.Name) 'SKILL.md'
+                if ((Test-Path -LiteralPath $src) -and (Test-Path -LiteralPath $dst)) {
+                    if ((Get-FileHash -LiteralPath $src).Hash -ne (Get-FileHash -LiteralPath $dst).Hash) { $stale += $sk.Name }
+                }
+            }
+            if ($stale.Count -gt 0) {
+                $warns.Add("installed skills differ from the kit's ($($stale -join ', ')): re-run setup.ps1 in $kit")
+            }
+        }
+    }
+} catch { }
 
 # --- output ---
 function Write-Section($title, $items, $color) {

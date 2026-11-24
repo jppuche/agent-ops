@@ -10,7 +10,7 @@ When it grows, graduate repeated patterns (3+ times) to `lessons-learned.md` and
 
 Project bootstrapped from the agent-ops kit. Pending:
 
-1. Fill the TODOs in `CLAUDE.md`.
+1. Edit the *Environment* block in `CLAUDE.md` (what the project may spend and use) to fit where it runs.
 2. Define the first unit of work in `status.md` (Active work).
 3. If a domain layer applies, build out its folders and their READMEs.
 

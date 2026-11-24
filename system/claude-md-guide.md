@@ -20,7 +20,7 @@ freshness_check: Anthropic publishes Claude Code behavior updates - refresh when
 
 Guidelines for maintaining this project's CLAUDE.md. All claims tagged with verification level.
 
-**Last verified:** 2026-03-30
+**Last verified:** 2026-11-10 for the Emphasis and path-scoped-rules lines; the rest 2026-06-26 (frontmatter `verified_scope`)
 
 ---
 

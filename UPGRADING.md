@@ -4,6 +4,18 @@ A project created with `/init-project` is a snapshot of the kit at that moment. 
 
 Paths below are relative to the kit clone (source) and to the instance (destination). "Re-run `setup.ps1`" means in the kit clone; it reinstalls the four user-level skills.
 
+## Changes after v0.11.0 (unreleased)
+
+Copy into the instance: `system/agent-orchestration.md`, `system/model-playbook.md`, `system/model-measurements.md`, `system/cross-validation-prompt.md`, `system/claude-md-guide.md`, `system/scripts/check-docs.ps1`, `system/scripts/README.md` and `system/templates/parallel-sessions-protocol.md` into its `system/`. Re-run `setup.ps1`.
+
+In the instance's `docs/status.md`: add a `Kit:` line under `Last updated:` (as in `docs-seed/status.md.template`), with the kit commit you are upgrading to; and replace the *Working configuration* section with the card from the same seed, keeping the configuration the project already runs. In its `CLAUDE.md`, replace the *Working configuration* paragraph and the *Large fan-outs*, *Advisor* and *Scratchpad* lines with the template's.
+
+What changes in behaviour:
+
+- **A proposal is a card** with model and effort for the main session and each worker; a task a handful of tool calls settles gets none.
+- **The compacted-context re-check is gone**: the working configuration is re-checked on five events, not six.
+- **SessionStart warns** when the model facts are over 45 days old, when the master kit is ahead of the instance's `Kit:` stamp, and when the installed skills differ from the kit's.
+
 ## Instances created before v0.11.0
 
 Copy into the instance: `system/agent-orchestration.md`, `system/model-playbook.md`, `system/templates/research-template.md`, `system/scripts/check-docs.ps1`, `system/scripts/extract-handbacks.ps1` (new) and `system/scripts/README.md` into its `system/`; `agents/adversarial-reviewer.md` and `agents/web-researcher.md` into its `.claude/agents/`, then start a new session before dispatching them (a role file changed mid-session was observed to load only after a new session or a resume). Add `outputs/fanouts/_handbacks/` to its `.gitignore`. In its `CLAUDE.md` *Environment* block, add the *API credits* and *Plan facts* lines from `CLAUDE.md.template` and fill the first. Re-run `setup.ps1` (`init-project` and `agent-dispatch` changed).

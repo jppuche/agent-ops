@@ -130,6 +130,8 @@ Only once findings are verified, integrate them into the plan and proceed.
 - **Low-risk isolated change** with no dependents: skippable.
 - **Trivial reversible change** (rename with no consumers): skippable, but document the decision.
 
+**Where this sits in the 2x2** (`system/agent-orchestration.md` sec 2): this gate is the one fresh reviewer of the VERIFIED mode. Risk `medium` or above here means HIGH error cost there; `low` means LOW. A change the 2x2 puts in DIRECT - cheap to undo and settled by one source, such as a rename whose consumers a grep lists and the build or tests then check - skips the gate.
+
 For everything else with risk >= medium, run the gate: one read-only sub-agent costs little next to breaking a dependent through an indirect dependency nobody saw. Your own grep does not replace it: you cannot see the dependents you did not think to search for, and a fresh context is the independent pass `system/model-playbook.md` sec 5 says to keep.
 
 **Which agent.** `Explore` is the built-in read-only agent; it runs on the session's model, except under a Fable main session, where on subscription plans, Console accounts and gateways it runs on Opus (`system/model-playbook.md` sec 2). In a project with the kit's roles, `fidelity-verifier` (does my analysis match the files?) or `adversarial-reviewer` (what did I not consider?) can take this prompt instead and bring their own closing lines.

@@ -46,6 +46,15 @@ README.md  README.es.md  UPGRADING.md  CHANGELOG.md  CONTRIBUTING.md  SECURITY.m
 - Commits: `type(scope): description`, English, ISO dates (e.g. `feat(agents): add operator role`).
 - Branches: `feature/<short-name>`. The maintainer may commit to main; outside contributions come as pull requests (`CONTRIBUTING.md`).
 
+## When the lineup or Claude Code changes
+
+Triggers: a new model in the `/model` picker or on the vendor's models overview; an alias that resolves to a different model; a Claude Code release that touches subagents, hooks, skills, settings, effort or the advisor; the SessionStart warning that the model facts are over 45 days old.
+
+1. Read the vendor pages raw (the `curl` of the `.md`) and re-verify `system/model-playbook.md` section 1 cell by cell; record what was re-read, with the date, in `system/model-measurements.md`.
+2. For each **measured** row whose model was superseded, apply the playbook's *When a measured row's model is superseded*: say the row is history, or pin the measured id and plan a re-measure.
+3. Read the Claude Code changelog from the last version the kit cites and fold in what contradicts, obsoletes or enriches a kit claim (`system/agent-orchestration.md` sec 6 *Freshness*, `system/scripts/README.md`).
+4. Bump `last_verified`, add the CHANGELOG entry and the UPGRADING note, and re-run `setup.ps1` so the installed skills match the repo.
+
 ## Caveat
 
 `system/scripts/check-docs.ps1` is built for an INSTANTIATED project (it expects `docs/status.md`, etc.). Run in THIS repo it reports those as "missing" because here they live as `docs-seed/*.template` / `*.seed` - expected, not a bug. The kit is read-mostly; you don't gate its commits the way an instance does.

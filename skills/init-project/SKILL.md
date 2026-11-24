@@ -10,7 +10,7 @@ description: >-
   the user before writing anything.
 model: sonnet
 metadata:
-  version: "1.2.0"
+  version: "1.3.0"
 ---
 
 # Init Project (agent-ops)
@@ -100,7 +100,7 @@ cp "<bundle_path>/docs-seed/decisions.md.template"     "<dest>/docs/decisions.md
 cp "<bundle_path>/docs-seed/dev-changelog.md.template" "<dest>/docs/dev-changelog.md"
 cp "<bundle_path>/docs-seed/cerebrate-log/README.md"   "<dest>/docs/cerebrate-log/README.md"
 ```
-In `status.md`, `scratchpad.md`, `decisions.md`, `dev-changelog.md`: replace `[PROJECT_NAME]` with `<project_name>`, and replace `YYYY-MM-DD` with today's date (ISO) **only** where it stands for a real date: the `last_verified:` and `Last updated:` lines and the first dated heading or row. Leave it untouched where it describes a format (an `entries_format:` line, a `Format:` note, a `superseded-by YYYY-MM-DD` example).
+In `status.md`, `scratchpad.md`, `decisions.md`, `dev-changelog.md`: replace `[PROJECT_NAME]` with `<project_name>`, and replace `YYYY-MM-DD` with today's date (ISO) **only** where it stands for a real date: the `last_verified:`, `Last updated:` and `Kit:` lines and the first dated heading or row. Leave it untouched where it describes a format (an `entries_format:` line, a `Format:` note, a `superseded-by YYYY-MM-DD` example). Also in `status.md`, stamp the kit this project came from: replace `[KIT_VERSION]` with the output of `git -C "<bundle_path>" describe --tags --always` and `[KIT_COMMIT]` with `git -C "<bundle_path>" rev-parse HEAD` (`unknown` for both if the bundle is not a git clone). The SessionStart check compares that commit with the kit's current one and says when the kit has moved on.
 
 ### Step 6: .gitignore
 ```bash

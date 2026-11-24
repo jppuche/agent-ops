@@ -53,9 +53,12 @@ does not exist, then `setup.ps1` was never run on this machine.
 ## 1. Should this be delegated at all?
 
 **Delegation needs a reason.** Current vendor guidance folds subagents back into the main loop unless
-one buys something measurable: relief from context bloat, parallel work in fresh disposable contexts,
-or a cleaner tool set (`system/agent-orchestration.md` section 2). Apply the damping rule before
-anything else:
+one buys something measurable: parallel work in fresh disposable contexts, noisy output kept out of the
+way, an independent review, or a cleaner tool set. In the vendor's measurements delegation paid only for
+routine work with a long cost tail and for work larger than one context window; one dependent chain, or
+work that fits in one context, did better on the orchestrator's model alone at a lower effort.
+Protecting the context window is no longer a reason by itself (`system/agent-orchestration.md` section 2,
+*When delegation pays*). Apply the damping rule before anything else:
 
 > Delegate only for work that is **large, genuinely independent and parallelizable**. Do not delegate
 > what you can finish yourself in a handful of tool calls. Do not use a subagent to double-check your
@@ -122,6 +125,15 @@ a pin. For **checkable** outputs (a coverage line, a test suite) there is a chea
 level: run at `low` and re-run only the failures at `high` (playbook section 7) - an option to price,
 not a default. A role dispatched as `general-purpose` + "read your role file" loses every pin: pass
 `model` and `effort` on the call.
+
+## The output: a configuration card
+
+Whatever steps 1-4 decide, say it as the card defined in the project's `docs/status.md` (*Working
+configuration*): the vehicle; the main session's model and effort; one line per worker with count, role
+(or ad hoc), model, effort and what it owns; the gate; the advisor; the cost against the alternative; why.
+A checked-in role's pins are its line's default, so naming the role names its model and effort; an ad hoc
+worker or a parallel session gets both written out. "One session, at its default effort" is a complete
+card. A task a handful of tool calls settles and that is easy to undo needs no card at all.
 
 ## 5. Write the prompt
 

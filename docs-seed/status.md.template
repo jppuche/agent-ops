@@ -4,6 +4,8 @@ Current project state. Source of truth - read first every session.
 
 Last updated: YYYY-MM-DD
 
+Kit: [KIT_VERSION] (commit [KIT_COMMIT]), copied YYYY-MM-DD. To move this project to a newer kit, apply the kit's `UPGRADING.md` from this version up.
+
 ## Active work
 
 Current focus: <none yet>
@@ -12,9 +14,19 @@ The **macro anchor** - if the conversation drifts, this says where we are. The s
 
 ## Working configuration
 
-Configuration: <not set - propose one at kickoff>
+Configuration: one session on the main session's model at its default effort; mode DIRECT; no advisor (the kit's default until a task calls for more)
 
-How this project gets its work done, in one or two lines with the reason: the main-session model, one session or agents (which vehicle), the gate a risky change must pass, and whether the advisor is in play. Set it at kickoff and change it only on the events listed in `system/agent-orchestration.md` sec 2; note the date of each change.
+When the configuration is anything else, write it as this card, one line per field:
+
+- **Vehicle**: one session | subagents | parallel sessions | workflow | agent team
+- **Main session**: model family, effort
+- **Workers**: one line each - count x role (or ad hoc), model family, effort, what it owns
+- **Gate for a risky change**: which roles
+- **Advisor**: model, or none
+- **Cost against the alternative**: one line
+- **Why**, and the date set
+
+A checked-in role's pinned model and effort are its line's default; anything ad hoc gets both named. Change the card only on the events in `system/agent-orchestration.md` sec 2, and note the date of each change. A task that a handful of tool calls settles and that is easy to undo needs no card and no proposal: do it.
 
 ## In progress
 
