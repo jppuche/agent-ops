@@ -237,7 +237,7 @@ From all agent outputs, identify the top 3-5 claims that would most change decis
 3. **Quantitative claims used for comparison** (star counts, pricing, feature counts)
 
 **Step 2 - Independent verification pass (ORCHESTRATOR ONLY):**
-The orchestrator re-checks these claims itself, using WebSearch/WebFetch. Do not hand this re-check to a subagent: that repeats the blindspot one layer deeper, and the orchestrator is the one with the session context and the judgment of what matters. This does not rule out the verifying roles (`fidelity-verifier`, `web-researcher` in verification mode): they make a first, independent pass over many claims, and their deciding findings still get this re-check. Exception: explicitly scoped fetch tasks with zero judgment required.
+The orchestrator re-checks these claims itself, on the raw page (`system/templates/research-template.md`, *Raw-page verification recipe*). In a session that reads pages through the built-in `web-fetch` subagent, a fetch is a small model's answer about the page: a first read, not this re-check. Do not hand this re-check to a subagent: that repeats the blindspot one layer deeper, and the orchestrator is the one with the session context and the judgment of what matters. This does not rule out the verifying roles (`fidelity-verifier`, `web-researcher` in verification mode): they make a first, independent pass over many claims, and their deciding findings still get this re-check. Exception: explicitly scoped fetch tasks with zero judgment required.
 
 For each triaged claim, verify independently (NOT by re-reading the agent's output):
 - Repo exists and stats match? -> Fetch the URL directly
