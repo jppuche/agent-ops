@@ -124,7 +124,7 @@ Guidelines for maintaining this project's CLAUDE.md. All claims tagged with veri
 
 More specific takes precedence. Child CLAUDE.md files load on demand.
 
-## Document Reference Strategy [PROJECT, an earlier workflow guide]
+## Document Reference Strategy [FIELD]
 
 How docs reference each other - evaluated for token efficiency, maintenance, and cross-platform compatibility.
 

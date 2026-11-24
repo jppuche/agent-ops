@@ -39,7 +39,7 @@ Collect before starting. If any required one is missing, prompt one by one (use 
 | `project_name` | yes | none | e.g. "acme-ops" |
 | `project_description` | yes | none | 1 line: what it does, which decision/output it serves, who consumes |
 | `stakeholder` | yes | none | e.g. "Name (Role)" or the business/owner. A pronoun, or a value too short to name anyone, is not a stakeholder: ask again (step 1) |
-| `project_type` | yes | none | `build` (code, data pipeline, automation, BI artifact, API), `research` (answer a question from sources) or `advisory` (weigh options, recommend a course). A mixed project takes the type of most of its work. It picks the starting defaults in `system/agent-orchestration.md` sec 7 |
+| `project_type` | yes | none | `build` (code, data pipeline, automation, dashboard or report, API), `research` (answer a question from sources) or `advisory` (weigh options, recommend a course). A mixed project takes the type of most of its work. It picks the starting defaults in `system/agent-orchestration.md` sec 7 |
 | `tier` | no | `build` when `project_type` is `build`, else `core` | which roles are copied. `core`: fidelity-verifier, domain-analyst, adversarial-reviewer, web-researcher, extractor. `build`: those plus executor and operator. Everything else (method docs, living docs, hooks) is the same in both tiers |
 | `dest` | yes | none | absolute path of the new project |
 | `bundle_path` | no | from `~/.claude/agent-ops-home.txt` | path to the cloned agent-ops kit. Resolution: explicit arg -> `~/.claude/agent-ops-home.txt` (written by `setup.ps1`) -> ask |
