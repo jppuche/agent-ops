@@ -10,7 +10,7 @@ when_to_use:
 when_not_to_use:
   - Domain questions (-> the project's own domain docs / lessons-learned.md)
   - Deciding HOW MANY agents and at what rigor (-> agent-orchestration.md; that doc designs the fan-out, this one staffs it)
-last_verified: 2026-11-10
+last_verified: 2026-11-24
 maintenance: living
 related_docs:
   - system/agent-orchestration.md - dispatch 2x2, vehicle menu, role library, verification contract
@@ -82,13 +82,14 @@ guidance or the kit's inference.
 **How Claude Code resolves the aliases** (Anthropic API provider): `opus` -> Opus 5.5, `sonnet` ->
 Sonnet 5.5, `haiku` -> Haiku 5.5, `fable` -> Fable 5.2, `best` -> the same model as `opus` (since
 v2.1.321; earlier builds resolved `best` to the Fable model). **This is provider-dependent**
-(model-config page, read raw 2026-11-10):
+(model-config page, read raw 2026-11-24):
 
 | Provider | `opus` | `sonnet` | `haiku` |
 |---|---|---|---|
 | Anthropic API | Opus 5.5 | Sonnet 5.5 | Haiku 5.5 |
 | Claude Platform on AWS | Opus 5.5 | Sonnet 4.6 | previous Haiku |
-| Amazon Bedrock, Google Cloud | Opus 5.5 | Sonnet 4.5 | previous Haiku |
+| Claude Models on Google Cloud (Anthropic managed) | Opus 5.5 | Sonnet 5.5 | previous Haiku |
+| Amazon Bedrock, Google Cloud's Agent Platform | Opus 5.5 | Sonnet 4.5 | previous Haiku |
 | Microsoft Foundry | Opus 4.6 | Sonnet 4.5 | previous Haiku |
 
 In Claude apps gateway sessions `fable` resolves to Fable 5. **It is also version-dependent**: Opus 5.5
@@ -185,6 +186,11 @@ What changes for the kit when the main session is Fable [PROJECT]:
   feature-availability page, 2026-11-10).
 - **Fable has its own allowance on some subscription plans** (a separate weekly limit), and on others it
   bills to usage credits. The project's `CLAUDE.md` *Environment* block says what the project may spend.
+  **In `-p` runs and Agent SDK apps there is no consent prompt**: a Fable request that would bill to
+  usage credits is billed without asking (model-config page, read raw 2026-11-24), so the guard is what
+  the project dispatches, not the prompt.
+- **Fable needs 30-day data retention**: it is not available under zero data retention unless Anthropic
+  authorizes it (API release notes, 2026-11-09). A project under ZDR cannot staff `fable`.
 
 What changes when the main session is Opus: nothing in the roles. Section 8 adds the option of a Fable
 advisor at decision points.
@@ -279,8 +285,8 @@ per-model does not carry to newly released models - Claude Code 2.1.280.)
 - **Effort is not a length dial.** It controls thinking, not visible response length. Prompt for
   length explicitly.
 - **Hold top-level effort constant inside a cached conversation** - changing it restarts the prompt
-  cache. Fable 5.1, Opus 5.5, Opus 5, Sonnet 5.5 and Haiku 5.5 support a per-message change that keeps
-  the cache.
+  cache. Fable 5.2, Fable 5.1, Opus 5.5, Opus 5, Sonnet 5.5 and Haiku 5.5 support a per-message change
+  that keeps the cache.
 - **Haiku 5.5 is the first Haiku with effort**, and the vendor gives a level-by-level guide (Prompting
   Claude Haiku 5.5, "Use effort to control thinking", verbatim):
   - *"`low` is the cheapest and fastest level. Use it for chat, short tool tasks, and simple,
@@ -680,10 +686,11 @@ usage does**. The check is the `/model` picker: a Fable row marked "Requires usa
 Fable advisor bills credits too. An agent cannot see that picker: ask the human once and record the
 answer in the project's *Environment* block. On API billing every call is paid at the advisor's token rates.
 
-**Requirements** [DOCS]: Anthropic API only (not Bedrock, Claude Platform on AWS, Google Cloud or
-Foundry; through a gateway only if it forwards the request intact). It is switched on by a feature flag
-Claude Code fetches, so a session with flag fetching off (`DISABLE_TELEMETRY`, for example) has no
-advisor. If the API refuses a pairing, Claude Code silently continues without the advisor: a session
+**Requirements** [DOCS, advisor page read raw 2026-11-24]: the Anthropic API, Claude Platform on AWS or
+Claude Models on Google Cloud (Anthropic managed), the last two from Claude Code v2.1.300; not Bedrock,
+Google Cloud's Agent Platform or Foundry; through a gateway only if it forwards the request intact. On
+the Anthropic API it is switched on by a feature flag Claude Code fetches, so a session there with flag
+fetching off (`DISABLE_TELEMETRY`, for example) has no advisor. If the API refuses a pairing, Claude Code silently continues without the advisor: a session
 that shows no `Advising` line is not being advised.
 
 **What it is not** [PROJECT]. The advisor reads the executor's own transcript, framing included. It is

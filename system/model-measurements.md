@@ -8,7 +8,7 @@ when_to_use:
   - When designing the next staffing A/B
 when_not_to_use:
   - Picking a model or effort for a task (-> system/model-playbook.md; that file holds the decisions)
-last_verified: 2026-11-10
+last_verified: 2026-11-24
 verified_scope: text moved verbatim from model-playbook.md in v0.9.0; no measurement was re-run
 maintenance: living
 related_docs:
@@ -42,6 +42,12 @@ vendor rule in section 2, the Fable 5.2 block in section 4 and all of section 8 
 vendor pages saved raw the same day. The Opus, Sonnet and Haiku columns were compared against the models
 overview and are unchanged; the Sonnet 4.5 deprecation dates and the Haiku price tiers were not re-read.
 The kit has measured nothing on Fable 5.2: every Fable row is vendor guidance or the kit's inference.
+**Re-verified 2026-11-24** (pre-share review): every section 1 cell against the models overview, pricing,
+deprecations, effort, model-config and advisor pages and the API release notes, all read raw the same
+day. Unchanged except the provider alias table (a Google Cloud Anthropic-managed row, Sonnet 5.5), the
+advisor provider list, Fable 5.2 in the per-message effort list, and two Fable notes (no consent prompt
+in `-p` / SDK runs; 30-day retention). The Sonnet 4.5 dates and the Haiku price tiers are now re-read and
+unchanged.
 
 ## Staffing measurements
 
