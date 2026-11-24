@@ -22,6 +22,7 @@ agents/                the 7 reusable roles, checked-in subagent definitions (co
 skills/                init-project  cerebrate  cerbero  agent-dispatch
 docs-seed/             *.template + *.seed = the living-doc seeds a new project starts from
 setup.ps1              installs the skills + records this clone's path (run once after clone)
+maintenance/freshness/ maintainer tooling, not product: the weekly freshness run (detector, merge gate, RUN.md)
 README.md  README.es.md  UPGRADING.md  CHANGELOG.md  CONTRIBUTING.md  SECURITY.md  LICENSE
 ```
 
@@ -48,7 +49,9 @@ README.md  README.es.md  UPGRADING.md  CHANGELOG.md  CONTRIBUTING.md  SECURITY.m
 
 ## When the lineup or Claude Code changes
 
-Triggers: a new model in the `/model` picker or on the vendor's models overview; an alias that resolves to a different model; a Claude Code release that touches subagents, hooks, skills, settings, effort or the advisor; the SessionStart warning that the model facts are over 45 days old.
+The weekly freshness run does the detection and the routine part of steps 1 and 3 on its own and merges what its gate allows (`maintenance/freshness/README.md`). What stays with the maintainer: re-measuring a superseded **measured** row (step 2), `setup.ps1` and tagging (step 4), and any pull request the run leaves open.
+
+Triggers: the weekly freshness run (`maintenance/freshness/`, a cloud scheduled task) opening a pull request it could not merge, or failing; a new model in the `/model` picker or on the vendor's models overview; an alias that resolves to a different model; a Claude Code release that touches subagents, hooks, skills, settings, effort or the advisor; the SessionStart warning that the model facts are over 45 days old.
 
 1. Read the vendor pages raw (the `curl` of the `.md`) and re-verify `system/model-playbook.md` section 1 cell by cell; record what was re-read, with the date, in `system/model-measurements.md`.
 2. For each **measured** row whose model was superseded, apply the playbook's *When a measured row's model is superseded*: say the row is history, or pin the measured id and plan a re-measure.
