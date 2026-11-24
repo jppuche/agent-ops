@@ -1,6 +1,6 @@
 # agent-ops
 
-![version](https://img.shields.io/badge/version-v0.11.0-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
+![version](https://img.shields.io/badge/version-v0.12.0-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
 
 [Leer en español](README.es.md) | [Changelog](CHANGELOG.md) | [Upgrading a project](UPGRADING.md) | [Security](SECURITY.md)
 
@@ -125,7 +125,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
 
 </details>
 
-**Which version you get.** The clone tracks `main`, which this page describes. The last tagged release, v0.11.0, predates the planning card and the freshness checks. `main` moves between releases, and the kit's weekly maintenance run can merge documentation updates into it (see [It keeps itself current](#it-keeps-itself-current)).
+**Which version you get.** The clone tracks `main`. Releases are tagged (the latest is v0.12.0). `main` may carry changes listed under *Unreleased* in the changelog, and the kit's weekly maintenance run can merge documentation updates into it (see [It keeps itself current](#it-keeps-itself-current)). To stay on a release, check out its tag: `git -C "$HOMEgent-ops" checkout v0.12.0`.
 
 ### What a new project looks like
 
