@@ -6,7 +6,7 @@ Paths below are relative to the kit clone (source) and to the instance (destinat
 
 ## Changes after v0.11.0 (unreleased)
 
-Copy into the instance: `system/agent-orchestration.md`, `system/model-playbook.md`, `system/model-measurements.md`, `system/cross-validation-prompt.md`, `system/claude-md-guide.md`, `system/scripts/check-docs.ps1`, `system/scripts/README.md` and `system/templates/parallel-sessions-protocol.md` into its `system/`. Re-run `setup.ps1`.
+Copy into the instance: `system/agent-orchestration.md`, `system/model-playbook.md`, `system/model-measurements.md`, `system/cross-validation-prompt.md`, `system/claude-md-guide.md`, `system/scripts/check-docs.ps1`, `system/scripts/README.md`, `system/templates/parallel-sessions-protocol.md` and `system/templates/research-template.md` into its `system/`; `agents/web-researcher.md` into its `.claude/agents/`, then start a new session before dispatching it. Re-run `setup.ps1`.
 
 In the instance's `docs/status.md`: add a `Kit:` line under `Last updated:` (as in `docs-seed/status.md.template`), with the kit commit you are upgrading to; and replace the *Working configuration* section with the card from the same seed, keeping the configuration the project already runs. In its `CLAUDE.md`, replace the *Working configuration* paragraph and the *Large fan-outs*, *Advisor* and *Scratchpad* lines with the template's.
 
@@ -15,6 +15,8 @@ What changes in behaviour:
 - **A proposal is a card** with model and effort for the main session and each worker; a task a handful of tool calls settles gets none.
 - **The compacted-context re-check is gone**: the working configuration is re-checked on five events, not six.
 - **SessionStart warns** when the model facts are over 45 days old, when the master kit is ahead of the instance's `Kit:` stamp, and when the installed skills differ from the kit's.
+- **Research prompts**: a track prompt states an objective, boundaries and preferred sources instead of numbered steps with exact queries. A prompt of your own that pastes the Research Prompt Prefix should take the v2.6 block: its provenance tags are glossed, and a claim read at a secondary source is `AGGREGATOR` even when the page was fetched.
+- **`web-researcher`** reports a byte-exact value tagged `UNVERIFIED-EXACT` instead of leaving it out; fetch it through a deterministic channel as before.
 
 ## Instances created before v0.11.0
 
