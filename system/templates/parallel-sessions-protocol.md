@@ -35,7 +35,7 @@ related_docs:
 
 - Split by context: each session owns a workstream and its files. If two sessions keep needing each other's results, merge them.
 - Every session may launch its own subagents.
-- After any restart or resume, re-run `/rename <name>` if needed and check the address with `/list-agents`.
+- After any restart or resume, re-run `/rename <name>` if needed and check the address with `/list-agents` (the user) or the `ListAgents` tool (an agent: `/list-agents` output reaches only the user since v2.1.328). Avoid `@` in session names.
 
 ## 2. Setup checklist (each session, at start)
 

@@ -5,6 +5,9 @@ Release notes for the kit itself, not for any project built from it. Dates are I
 ## Unreleased
 
 - **`.gitignore`: hook error logs** (`outputs/fanouts/*.errors.log`). Exception text can carry local paths, and with them the user name; the usage and closing-lines logs stay committable (metadata only). An instance adds the same line.
+- **Model facts re-verified 2026-11-24** (`model-playbook.md`, `model-measurements.md`): provider alias table gains the Google Cloud (Anthropic managed) row; the advisor runs on three providers; Fable 5.2 joins the per-message effort list; Fable bills credits without a prompt in `-p` / SDK runs (also in `CLAUDE.md.template` *Billing*) and needs 30-day retention.
+- **Claude Code 2.1.322-2.1.331 folded in**: `blockWritesOutsideWorkingDirectories` removes `EnterWorktree` / `ExitWorktree` (`system/scripts/README.md`, with the three ways out and what stays writable, replacing the 2026-10-30 hedge); `/list-agents` now shows only the user, agents use `ListAgents`, and the sender cap is 100,000 (`agent-orchestration.md`, `parallel-sessions-protocol.md`); cloud sessions reply in some cases; `CLAUDE_CODE_FORK_SUBAGENT=0` and the `-p` wait ceiling; `/loop` life and `Skill(name)` pre-allow; `/code-review` scope. The same-session role-dispatch restart stays until re-tested on v2.1.326, which lists a matching fix.
+- **Pre-share privacy pass**: code page, BI wording, dashboard-specific seed wording, an outside-document tag and the local project slug in the hand-back header removed; `README.es.md` version line.
 
 ## v0.11.0 - 2026-11-14
 

@@ -22,6 +22,8 @@ advisory) - that is not an older kit. If the work needs one, say so and copy its
 Observed 2026-11-13 (one machine, one Claude Code build): roles copied by `init-project` failed with
 "Agent type not found" several turns later, seven times, and appeared after the session was resumed.
 After a copy, ask the user to start a new session (or resume this one) before the first dispatch.
+Claude Code v2.1.326 lists a fix for a first agent created during a session not being found; not
+re-tested in the kit, so the restart stays until a same-session dispatch on that build succeeds.
 
 **What the general-purpose fallback loses.** The role's frontmatter does not travel: `model`, `effort`,
 `maxTurns`, `omitClaudeMd` and, above all, the `tools` allowlist. The agent gets the general-purpose
