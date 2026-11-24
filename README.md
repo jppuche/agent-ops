@@ -2,48 +2,78 @@
 
 ![version](https://img.shields.io/badge/version-v0.11.0-blue) ![platform](https://img.shields.io/badge/platform-Windows-0078D6) ![license](https://img.shields.io/badge/license-MIT-green) ![built for Claude Code](https://img.shields.io/badge/built%20for-Claude%20Code-D97757)
 
-[Leer en español](README.es.md) | [Upgrading a project](UPGRADING.md) | [Changelog](CHANGELOG.md) | [Security](SECURITY.md)
+[Leer en español](README.es.md) | [Changelog](CHANGELOG.md) | [Upgrading a project](UPGRADING.md) | [Security](SECURITY.md)
 
-agent-ops is a kit of instructions, subagent roles, hooks and skills for running Claude Code projects with multi-agent orchestration and explicit verification. You do not work inside it: you install it once per machine, then create each new project from it with one command.
+**A playbook you give Claude Code so it organizes serious work the way an experienced team lead would:** it decides when a job needs helpers and when it does not, picks which Claude model and how much thinking each part gets, and checks the results before it tells you they are done.
 
-**Windows only.** Install once (`setup.ps1`), then type `/init-project` in each new project folder.
+It is a set of plain files for Claude Code on Windows: instructions, a few helper definitions and some small automatic checks. One person built it for their own work and publishes it as is. This page goes from plain language to technical detail; stop when you have what you need.
 
-## Who it is for
+---
 
-People who already use Claude Code for work that matters (code, data pipelines, research, recommendations) and have seen how it fails when nothing checks it:
+## In one minute
 
-- several agents agree on something false, and the agreement reads as confirmation;
-- a research summary cites sources nobody opened, or a paraphrase is filed as the source's words;
-- a subagent with no pinned effort level inherits the session's highest one and burns tokens on a small job;
-- a model does alone, in one long session, what a fresh-context reviewer would have caught in minutes.
+**The problem.** Claude Code is capable, and it can now launch helper agents, run sessions in parallel and switch between models of different cost and strength. Left alone, though, it relies on what it remembers about those options, and that memory ages in weeks. It may also spend too much on a small job, or too little checking on a big one. And when several agents agree, the agreement can look like proof when it is not.
 
-The kit turns each of those into a rule, a role or a hook.
+**What the kit does.** It gives Claude a written, regularly updated method, and puts it where Claude will find it at the right moment. Think of it as handing a capable new colleague the team's handbook on day one. Each project keeps the copy it started with until you ask Claude to upgrade it. Faced with a task, Claude can then tell you, concretely:
 
-## When not to use it
+- *"This is small. I'll just do it."*
+- *"This needs four researchers on a mid-size model at high effort (more thinking per step), and two reviewers on the strongest model. Here's why, and what it costs compared with doing it alone."*
+- *"This deserves parallel sessions that talk to each other: one for the database, one for the API, and a lead that coordinates."*
 
-- **You are not on Windows.** The hooks need Windows PowerShell; elsewhere only the written method works.
-- **The work fits a short session.** Extra agents buy wall-clock time and a clean context, not more correctness per token. The kit's own default for small, reversible work is one session with no agents.
-- **You want to retrofit an existing repository.** `/init-project` stops on a non-empty folder. A merge mode exists (it asks before touching each existing file), but the kit is built for new folders.
-- **You need a measured gain.** The kit as a whole has not been measured against working without it (see *Status and limits*).
+**What it does not do.** It does not make Claude smarter, and it gives Claude no new permissions: everything still runs in your session, under your Claude Code permission settings. Some small checks do run on their own, at session start, before a commit and around each helper (see [What it changes](#what-it-changes)).
 
-## Status and limits
+## Is it for you?
 
-- This is one person's working kit, published as is.
-- **Windows and PowerShell only.** On another OS the enforcement layer (commit gate, closing-line check, prompt capture, usage log) does not run.
-- It tracks Claude Code and the model lineup as of the `last_verified` date in [`system/model-playbook.md`](system/model-playbook.md), and ages fast. If that date is more than a few weeks old, check its section 1 against the vendor's current pages before trusting a staffing row.
-- What was measured is which model and effort each role runs on, in small A/Bs (k = 3 at most). The fixtures and scorers are not published, so the figures are a report, not something you can audit here.
-- Nothing has been measured on the newest Fable model; its rows are vendor guidance or inference.
-- `--domain` is an extension point. No domain kit ships with this repository.
+**Likely yes** if you use Claude Code for work that matters (code, data, research, recommendations) and you want it to:
 
-## Prerequisites
+- choose the setup for each task with current information instead of memory;
+- check its work in ways that can actually catch errors;
+- keep a record of decisions and state that survives from one session to the next.
 
-- Windows with PowerShell 5.1 or later.
-- Git for Windows. `init-project` copies files with `cp` and `mkdir -p`, so Claude Code needs Git Bash.
-- Claude Code v2.1.321 or later. Older builds ignore some settings silently: the write boundary needs v2.1.314, a per-call effort override v2.1.292, the `fable` alias v2.1.321.
-- A paid claude.ai plan or API access. Fable (the top model tier) may need usage credits on your plan, and in `claude -p` or Agent SDK runs it bills them with no consent prompt. Each project's *Environment* block, in its `CLAUDE.md`, records what it may spend.
-- Optional: Python, only for Cerbero's hooks and tests (3.10 or later) and its MCP scanner (3.11 to 3.13); see `skills/cerbero/setup-guide.md`. The kit's own hooks need only PowerShell.
+**Likely not** if:
 
-Check what you have:
+- **You are not on Windows.** The automatic checks need Windows PowerShell; elsewhere only the written method works.
+- **Your tasks are short.** Extra agents buy speed and a clean workspace, not more correct answers per token. For quick work the kit's own advice is one session and no helpers. It costs you little, but it adds little.
+- **Your main session runs on Sonnet or Haiku.** The method is written for an Opus or Fable main session. It works on smaller models, but they fill in the planning card less reliably.
+- **You want to drop it into an existing repository.** It is built for new project folders. A merge mode exists, but it is not the main path.
+- **You need proof that it helps, or support.** It has been tested in small runs, not measured at scale (see [Status and limits](#status-and-limits)), and issues may get no reply.
+
+**What it costs.** Every session in a kit project loads about 4K tokens of instructions and status, and the kit's four skills add a few hundred tokens of descriptions to every Claude Code session on your machine. Planning a task with the kit cost about 40K more tokens than without it in the maintainer's tests, roughly 1.7 times as much. A full validation gate runs three reviewers, two of them on Opus. What that bought: without the kit, Claude picked effort levels that Anthropic's current guidance contradicts. The tests are small and not published, so treat this as a report ([Status and limits](#status-and-limits)).
+
+---
+
+## How you use it
+
+**The part you repeat is the conversation.** The setup is done once, and Claude can do most of it for you (next section). Day to day, you talk to Claude in your project folder as usual. These requests are the ones that put the kit to work:
+
+| You want to... | Say something like | What Claude does |
+|---|---|---|
+| Start a new project | *"/init-project"*, or *"start a new agent-ops project here"* | Asks a few questions (name, purpose, who it is for, type), shows you the plan, and builds the project folder once you confirm |
+| Get on with a small task | Just ask for it | Does it directly. The kit tells it not to make a ceremony of small, reversible work |
+| Plan a bigger task | *"How would you organize this, and what would it cost?"* | Proposes a vehicle (one session, helpers, parallel sessions or a workflow), the model and effort for each part, the check it would run, and the cost against doing it alone. It waits for your OK |
+| Research something on the web | *"Research X on the web and check the claims my decision depends on."* | Sends a researcher that has no access to your files, gets back claims tagged by source and confidence, then re-checks the decisive ones itself on the original pages |
+| Make sure something is right before it ships | *"Check this properly before it ships."* | Scales the check to the stakes: nothing for a small, reversible change, one fresh reviewer for a risky one, and for a high-stakes change three independent reviewers from different angles (does it match the data, does it mean what it should, what was missed). Claude weighs what they find, applies the fixes and re-reviews, at most three rounds before it asks you |
+| See where things stand | *"Where are we?"* | Reads the project's status file, which it keeps current |
+| Close a stretch of work | *"/cerebrate"* | Distills what was learned into the project's notes, and shows you the plan before writing anything |
+| Bring a project up to a newer kit | *"Update the kit and bring this project up to date."* | Pulls the kit, re-runs its setup and applies the upgrade notes for your project's version |
+
+You do not need to learn the method's vocabulary: ask in plain words. The terms are in [Terms](#terms) if you want them.
+
+**What happens without you asking.**
+- At session start, Claude gets a short health report on the project's docs: broken links, stale dates, an outdated kit.
+- A `git commit` is blocked when that check finds a critical error, such as a broken link.
+- Claude brings up a different setup on its own only at a few moments: before a large or hard-to-undo plan, when an assumption breaks, before an irreversible step, after two failed attempts, and when a block of work closes. Otherwise it says nothing about it.
+
+---
+
+## Getting started
+
+### What you need
+
+- Windows with PowerShell 5.1 or later, and Git for Windows (Claude Code uses its Git Bash).
+- Claude Code v2.1.321 or later.
+- A paid claude.ai plan or API access. Fable (the top model tier) may need usage credits on your plan, and in `claude -p` or Agent SDK runs it bills them with no consent prompt.
+- Optional: Python, only for Cerbero's hooks and tests (3.10 or later) and its MCP scanner (3.11 to 3.13). The kit's own hooks need only PowerShell.
 
 ```powershell
 $PSVersionTable.PSVersion
@@ -51,7 +81,23 @@ git --version
 claude --version
 ```
 
-## Install
+### Let Claude install it
+
+Open Claude Code in any folder and paste:
+
+> Install the agent-ops kit from https://github.com/jppuche/agent-ops into a folder named agent-ops in my user profile. Read setup.ps1 and tell me in two lines what it does. Then check whether I already have skills named init-project, agent-dispatch, cerebrate or cerbero in .claude\skills in my user profile; if so, stop and show me. Otherwise run setup.ps1 with powershell -NoProfile -ExecutionPolicy Bypass -File, and tell me what it changed.
+
+Claude Code asks your permission before it clones the repository and before it runs the script. That is expected: approve each one once you have read what it will do.
+
+Then restart Claude Code once, create an empty folder for your first project, open Claude Code there and say *"/init-project"*. When it finishes:
+
+- Read the *Environment* block in the project's `CLAUDE.md`: it says what the project may spend (for example, whether it may use usage credits). Edit it, or ask Claude to.
+- Start a new Claude Code session in the project folder before you ask for any helper: a helper added during a session may not be found until the next one.
+
+### Or install it yourself
+
+<details>
+<summary>The manual steps</summary>
 
 Run these in Windows PowerShell. Any stable folder outside your projects works; this uses `$HOME\agent-ops`.
 
@@ -77,25 +123,20 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1
 
 `-ExecutionPolicy Bypass` applies to that one process. It does not change your machine's policy, which on a fresh Windows install blocks `.\setup.ps1`. Restart Claude Code after the first install.
 
-`main` may carry changes listed under *Unreleased* in the changelog. To stay on a release, check out its tag (`git -C "$HOME\agent-ops" checkout v0.11.0`).
+</details>
 
-## What it changes
+**Which version you get.** The clone tracks `main`, which this page describes. The last tagged release, v0.11.0, predates the planning card and the freshness checks. `main` moves between releases, and the kit's weekly maintenance run can merge documentation updates into it (see [It keeps itself current](#it-keeps-itself-current)).
 
-**On your machine (`setup.ps1`).** It copies each folder in `skills/` (four today) into `~/.claude/skills/`, overwriting same-named files, and writes `~/.claude/agent-ops-home.txt` with the clone's path. Nothing else: no hooks, no settings, no PATH change, no network, no admin rights.
+### What a new project looks like
 
-Skills at user level load in **every** Claude Code session on this machine, not only in kit projects. Claude can start `agent-dispatch`, `cerebrate` and `init-project` by itself when a task matches. `init-project` and `cerebrate` show their plan and wait for your answer before writing, but that wait is an instruction to the model, not a permission prompt: in auto or bypass permission mode it is the only stop.
+`/init-project` asks for:
+- the project name;
+- one line on what it does and who consumes it;
+- a stakeholder (a name and role, or the owning team);
+- the folder's absolute path;
+- the type: `build` (code, data pipeline, automation, API), `research` (answer a question from sources) or `advisory` (weigh options and recommend).
 
-**In each project (`/init-project`).** It writes only inside the folder you name. It installs `.claude/settings.json` with seven hook handlers over four scripts in `system/scripts/`, each run as `powershell -NoProfile -ExecutionPolicy Bypass -File <script>`. They fire at session start, before `git commit`, and around each subagent; none uses the network or deletes anything. Logs go to `outputs/fanouts/`: `_dispatched-prompts.jsonl` holds every subagent prompt verbatim and is gitignored; the usage and closing-line logs hold ids and token counts. The usage hook reads subagent transcripts under `~/.claude/projects/`, read-only. The same file turns on the write boundary (see *The hooks*).
-
-`.claude/settings.json` is committed with the project, so anyone who clones it and trusts the folder runs the same hooks. Read `system/scripts/` before you enable them, and see [SECURITY.md](SECURITY.md).
-
-## Start a project
-
-1. Create an empty folder for the project, outside the kit.
-2. Open Claude Code there and type `/init-project`, or ask in plain words for a new agent-ops project. It shows the inputs it collected and writes nothing until you confirm them.
-3. Answer its questions: the project name, one line on what it does and who consumes it, a stakeholder (a name and role, or the owning team), the absolute path of the folder, and the type: `build` (code, data pipeline, automation, API), `research` (answer a question from sources) or `advisory` (weigh options and recommend). `build` installs seven roles; `research` and `advisory` install five (the `core` tier, without `executor` and `operator`). It also offers `git init` (default no).
-
-The result:
+`build` installs seven helper roles; the other two types install five. It also offers `git init`.
 
 ```text
 my-project/
@@ -104,78 +145,109 @@ my-project/
   .claude/settings.json   hooks + write boundary
   .claude/agents/         5 or 7 role files
   system/                 method docs + hook scripts, copied as-is
-  docs/                   status, scratchpad, decisions, lessons-learned, dev-changelog, cerebrate-log/
+  docs/                   status (with the kit version it came from), scratchpad, decisions,
+                          lessons-learned, dev-changelog, cerebrate-log/
   outputs/fanouts/        hook logs
 ```
 
-Then start a new Claude Code session in the project folder: roles copied mid-session were not dispatchable in the session that copied them (observed on one machine, 2026-11-13; Claude Code v2.1.326 lists a fix for this, not yet re-tested by the kit).
+---
 
-## Update
+## How it works
 
-**The kit**: `git -C "$HOME\agent-ops" pull`, then re-run `setup.ps1` (same command as in *Install*) if the pull touched `skills/`. Skill updates reload without a restart. New projects get the new version.
+### Three decisions, kept apart
 
-**An existing project** does not update itself: it is a copy of the kit as of its `/init-project`. Write the kit version you started from (`git -C "$HOME\agent-ops" describe --tags`) in its `docs/status.md` on day one. To move it forward, apply [UPGRADING.md](UPGRADING.md) from that version up, then start a new Claude Code session so changed roles load.
+For any task Claude settles three things, and the kit keeps them apart because mixing them is where the waste comes from:
 
-**Improve the kit**: when a project shows a new pattern or a gap in the method, record it there (`docs/lessons-learned.md`, or the closing `/cerebrate`). Once it holds two or three times, open an issue ([CONTRIBUTING.md](CONTRIBUTING.md)).
-
-## Uninstall
-
-Delete the four skill folders under `~/.claude/skills/` and the file `~/.claude/agent-ops-home.txt`. A project built from the kit keeps working as plain files. To switch its hooks off, remove the `hooks` block from its `.claude/settings.json`; remove the `permissions` block to lift the write boundary. Cerbero's hooks, if you installed them, come out the way `skills/cerbero/setup-guide.md` put them in.
-
-## Terms
-
-- **Instance**: a project created from the kit; a copy, not a link.
-- **Living docs**: `docs/status.md`, `decisions.md`, `lessons-learned.md` and the rest, which the agent keeps current.
-- **Orchestrator**: the main Claude Code session, the one that integrates and decides.
-- **Fan-out**: several subagents dispatched in parallel on parts of one question.
-- **Gate**: a check a change must pass before it ships. A full validation gate is at least `fidelity-verifier` + `domain-analyst` + `adversarial-reviewer`.
-- **Effort**: Claude Code's reasoning-depth setting (`low` to `max`); the kit pins it per role.
-- **Hand-back**: a subagent's final report.
-- **Closing lines**: the `CHECKED:` / `NOT CHECKED:` lines every role report must end with.
-- **Fable**: Anthropic's top model tier, above Opus. **Advisor**: `/advisor`, consulting a stronger model at decision points.
-- **Tier**: which roles a project gets (`core` 5, `build` 7).
-- **Domain kit** (`--domain`): an optional layer of extra folders and docs for one kind of work; none ships here.
-
-## What is in the box
-
-| Path | What it is |
-|---|---|
-| `CLAUDE.md.template` | The `CLAUDE.md` each project instantiates (rules, routing, conventions; under 200 lines) |
-| `system/` | The method: orchestration, model and effort staffing, the review contract, research template, hook scripts |
-| `agents/` | Seven checked-in subagent definitions, each with its tools, model family and effort pinned |
-| `skills/` | `init-project`, `agent-dispatch`, `cerebrate`, `cerbero` |
-| `docs-seed/` | Seeds for each project's living docs (status, scratchpad, decisions, lessons, changelog) |
-| `setup.ps1` | Installs the skills at user level and records where the kit lives |
-| `CLAUDE.md` | The guide for maintaining the kit itself. Do not run a project from the clone: Claude would follow these instructions instead of a project's |
-
-## The core ideas
-
-**The orchestrator integrates and decides.** Agents produce findings; they never edit the artifact they review. The main session applies the fix.
-
-**The 2x2 that sizes the rigor.** Before delegating, the agent places the task on two axes: the cost of an error (reversible or not, internal or outward-facing) and the need for synthesis (one source, or several that may disagree). That gives four modes. Rigor is one decision; the vehicle (subagents, a team, a workflow) and the model are separate ones. See [`system/agent-orchestration.md`](system/agent-orchestration.md) sec 2.
+1. **How much checking** the task needs. This is the *2x2*: what an error would cost, against how many sources must be reconciled.
+2. **What vehicle** carries the work: one session, helper agents, parallel sessions, a workflow, an agent team.
+3. **Which model and effort** each part runs on.
 
 | | One source is enough | Sources must be triangulated |
 |---|---|---|
 | **Cheap to undo** | DIRECT: no agents | AGENTS LIGHT: one or two in parallel |
 | **Costly to undo** | VERIFIED: a spot-check by a fresh reader | FULL SYSTEM: a fan-out plus a skeptical round |
 
-**The review contract.** Every finding a review agent returns carries a locator (`file:line`, a query, a section), a provenance tag (read it, inferred it, assumed it) and a `falsified_by` line: the cheap check that would refute it. The orchestrator re-checks the deciding findings itself. See [`system/verification-contract.md`](system/verification-contract.md).
+The answer is written down as a **configuration card** in the project's `docs/status.md`. The card names the vehicle, and the model, effort and scope of the main session and of each worker, plus the check and the cost against the alternative.
 
-**The independence test for verification.** Before adding a verification step, ask: *could this step fail independently of the first pass?* A different source or a fresh reasoner stays; the same model rereading the same evidence ("double-check your work") is cut. See [`system/model-playbook.md`](system/model-playbook.md) sec 5.
+A project starts on a recorded default: one session at the main model's default effort. A task a handful of tool calls settles gets no card. The card is re-checked only on the five events listed under *What happens without you asking*. See [`system/agent-orchestration.md`](system/agent-orchestration.md) sec 2.
 
-**Exact data never through a model.** Hashes, ids, settings names and long numbers do not travel through a summarizing fetch. In a field case, 10 of 10 digests read through WebFetch were plausible and wrong; `curl` plus a parser caught it. See [`system/agent-orchestration.md`](system/agent-orchestration.md) sec 2.
+### When helpers pay
 
-**Split by context, not by role.** A subagent or a parallel session gets a piece that needs little from the rest and hands back something compact. Splitting one feature into designer, implementer and tester turns every handoff into a lossy summary. See [`system/agent-orchestration.md`](system/agent-orchestration.md) sec 2.
+The kit follows Anthropic's own measurements. Delegating paid off in two situations: routine work with a long cost tail, and work larger than one context window. For one chain of dependent steps, or work that fits in one context, the main model alone at lower effort did better.
 
-**Never cap a reviewer's severity.** Told "only report criticals", a model may report less. Constrain the domain instead, not the threshold.
+Helpers also earn their place for running in parallel, keeping noisy output out of the way, and giving an independent review. Protecting the context window is no longer a reason on its own.
 
-**Convergence is not evidence.** Agents that agree may share a premise rather than a truth. Parallel verifiers get different angles, and only a check against the artifact (a grep, a query, a fetch) settles a claim. See [`system/agent-orchestration.md`](system/agent-orchestration.md) sec 1 and 5.
+### Checking that can actually catch errors
 
-**The working configuration.** A project starts on a recorded default: one session at the main model's default effort. When a task calls for more, the agent proposes a card (the vehicle, and model, effort and scope for the main session and each worker; the gate; the cost against the alternative) and records it in `docs/status.md`. A task a handful of tool calls settles gets no proposal. It re-checks only on five named events (a large plan, a broken assumption, an irreversible action, two failed attempts, the close of a block) and stays silent when the configuration still fits. "One session, no agents" is a valid answer. See [`system/agent-orchestration.md`](system/agent-orchestration.md) sec 2.
+- **Convergence is not evidence.** Agents that agree may share a premise rather than a truth. Only a check against the artifact (a grep, a query, the original page) settles a claim.
+- **The independence test.** A verification step stays only if it could fail independently of the first pass (a different source, a fresh reviewer). "Double-check your work" is cut. See [`system/model-playbook.md`](system/model-playbook.md) sec 5.
+- **The review contract.** Every finding says:
+  - where it is (`file:line`, a query, a section);
+  - how it is known (read, inferred, assumed);
+  - what cheap check would refute it.
 
-**Measured role staffing.** Each role's model and effort is pinned in its definition, and the rows marked measured rest on small A/Bs recorded with their rules, runs and costs. See [`system/model-measurements.md`](system/model-measurements.md) and [`system/model-playbook.md`](system/model-playbook.md) sec 2.
+  The main session re-checks the findings that decide something. See [`system/verification-contract.md`](system/verification-contract.md).
+- **Exact data never through a model.** Hashes, ids, settings names and long numbers are read with a deterministic tool, not through a summarizing fetch. In one field case, 10 of 10 digests read through a summary were plausible and wrong. A later single re-test got 4 of 4 right; one run, so the rule stays.
+- **Never cap a reviewer's severity.** Told "only report criticals", a model may report less. Narrow the subject instead.
 
-## The roles
+### The web is treated as hostile
+
+Pages can carry instructions aimed at agents. The kit's answer is mostly about boundaries:
+
+- **The `web-researcher` role** has no file or shell tools and starts without the project's instructions. A hijacked run has nothing local to read or write. What it could leak (its task prompt, the folder path, the branch and recent commit names) can only leave through a fetch or a search, so its prompt carries nothing private the question does not need.
+- **No task details in URLs.** The researcher is told never to put anything about the task, its prompt or a local file into a URL or a search query.
+- **Injection attempts are reported separately**, in a section of their own, never passed on as a next step.
+- **The decisive claims are re-checked** on the raw page.
+
+The research prefix every web task carries buys auditability: tagged claims, sources and refutation checks. In the maintainer's test (24 runs, single attempts that did not adapt) no model was fooled with or without it, so the test could not show that it adds resistance. Anthropic's guidance puts the real protection in boundaries like the ones above. See [`system/templates/research-template.md`](system/templates/research-template.md).
+
+### It keeps itself current
+
+The models and Claude Code change every few weeks, so the method carries dates and a way to notice when it ages.
+
+- **On the master kit**, a weekly scheduled run reads Anthropic's official pages and changelog and compares them with what the kit says. It opens a pull request with what changed, gated by a script:
+  - a change limited to the method docs, the changelog, the upgrade notes and the READMEs can merge without a person;
+  - changes to roles, skills, templates or seeds wait for the maintainer (`maintenance/freshness/`).
+- **In each project**, the session-start check warns:
+  - when the model facts are more than 45 days old;
+  - when the master kit has moved past the version the project was made from;
+  - when the installed skills differ from the kit's.
+
+---
+
+## Reference
+
+### What it changes
+
+**On your machine (`setup.ps1`).** It copies each folder in `skills/` (four today) into `~/.claude/skills/`, overwriting same-named files, and writes `~/.claude/agent-ops-home.txt` with the clone's path. Nothing else: no hooks, no settings, no PATH change, no network, no admin rights.
+
+Skills at user level load in **every** Claude Code session on this machine, not only in kit projects. Claude can start `agent-dispatch`, `cerebrate` and `init-project` by itself when a task matches. `init-project` and `cerebrate` show their plan and wait for your answer before writing, but that wait is an instruction to the model, not a permission prompt: in auto or bypass permission mode it is the only stop.
+
+**In each project (`/init-project`).** It writes only inside the folder you name. It installs `.claude/settings.json` with seven hook handlers over four scripts in `system/scripts/`, each run as `powershell -NoProfile -ExecutionPolicy Bypass -File <script>`. They fire at session start, before `git commit`, and around each subagent; none uses the network or deletes anything.
+
+Logs go to `outputs/fanouts/`:
+- `_dispatched-prompts.jsonl` holds every subagent prompt verbatim and is gitignored;
+- the usage and closing-line logs hold ids and token counts.
+
+The usage hook reads subagent transcripts under `~/.claude/projects/`, read-only.
+
+`.claude/settings.json` is committed with the project, so anyone who clones it and trusts the folder runs the same hooks. Read `system/scripts/` before you enable them, and see [SECURITY.md](SECURITY.md).
+
+### Status and limits
+
+- This is one person's working kit, published as is.
+- **Windows and PowerShell only.** On another OS the enforcement layer (commit gate, closing-line check, prompt capture, usage log) does not run.
+- It tracks Claude Code and the model lineup as of the `last_verified` date in [`system/model-playbook.md`](system/model-playbook.md), and ages fast.
+- **What was measured**, all on Anthropic models only:
+  - which model and effort each role runs on, in small A/Bs (k = 3 at most);
+  - two rounds of the kit as a whole, on three tasks and three models: one run per cell plus one run without the kit in the first round, two runs per cell in the second;
+  - one round of the research wing against local pages with planted injections.
+
+  The results are recorded in [`system/model-measurements.md`](system/model-measurements.md). The fixtures and scorers are not published, so the figures are a report, not something you can audit here.
+- Nothing has been measured on the newest Fable model; its rows are vendor guidance or inference.
+- `--domain` is an extension point. No domain kit ships with this repository.
+
+### The roles
 
 Each role pins its tools, model family and effort in its definition.
 
@@ -189,35 +261,86 @@ Each role pins its tools, model family and effort in its definition.
 | `operator` (`build` tier) | `haiku`, `high` | Pre-flight and post-flight GO/NO-GO checklists; every side fact must come from a command it ran |
 | `extractor` | `haiku`, `high`, 40 turns | Pulls fields from named files into a located table with a `COVERAGE:` line; copies, never judges |
 
-The first three form the minimum of a full validation gate. Every role ends with fixed closing lines (`CHECKED:` / `NOT CHECKED:`); a role whose report lacks them is sent back at most twice, and a `haiku` role that refuses or stays incomplete after that is re-dispatched on a stronger model, not resumed.
+The first three form the minimum of a full validation gate. Every role ends with fixed closing lines (`CHECKED:` / `NOT CHECKED:`). A role whose report lacks them is sent back, at most twice. A `haiku` role that refuses, or is still incomplete after that, is re-dispatched on a stronger model, not resumed.
 
-## The hooks
+<details>
+<summary><b>The hooks</b></summary>
 
 `init-project` installs these in each project; the scripts live in `system/scripts/` ([README](system/scripts/README.md)):
 
-- **SessionStart**: `check-docs.ps1` reports broken links, stale dates and leftover placeholders to the agent.
+- **Session start**: `check-docs.ps1` reports broken links, stale dates, leftover placeholders and the freshness warnings to the agent.
 - **Commit gate**: the same script blocks a `git commit` on a critical error, through both the Bash and the PowerShell tool.
 - **Prompt capture**: every dispatched subagent prompt, with its model and effort, goes to an audit log.
 - **Usage log**: per-request tokens of each finished subagent, for comparing what a role really costs.
 - **Closing lines**: a kit role whose report lacks its closing lines is sent back, at most twice.
 - **Write boundary** (a setting, not a hook): `permissions.blockWritesOutsideWorkingDirectories` makes Claude Code (v2.1.314 or later) refuse file edits outside the project's working directories. It does not cover shell commands. It also removes `EnterWorktree` and `ExitWorktree`, so a session cannot move itself into a git worktree: start one with `claude --worktree`, or see the [scripts README](system/scripts/README.md) for the other ways out.
 
-## The skills
+</details>
+
+### The skills
 
 - **`init-project`**: creates a project from the kit; type `/init-project` or ask in words.
-- **`agent-dispatch`**: the procedure Claude loads before delegating (whether to, which vehicle, model, effort, how to word the prompt).
-- **`cerebrate`**: the end-of-block reflection skill. It distills what a session learned into the living docs. You can type `/cerebrate`, or the agent starts it when a block closes; either way it shows its plan and waits for your approval before it writes.
+- **`agent-dispatch`**: the procedure Claude loads before organizing or delegating work (whether to, which vehicle, model, effort, how to word the prompt). It ends in the configuration card.
+- **`cerebrate`**: the end-of-block reflection. It distills what a session learned into the living docs, and shows its plan and waits for your approval before it writes.
 - **`cerbero`**: the security review to run before installing any third-party MCP server or skill. `skills/cerbero/` is synced from [Cerbero](https://github.com/jppuche/Cerbero) (MIT, same author); its hooks are installed separately (`skills/cerbero/setup-guide.md`).
 
-## If something breaks
+### Update and uninstall
 
-- **`setup.ps1` cannot be loaded / running scripts is disabled**: use the `powershell -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1` form from *Install*.
+**Update the kit**: `git -C "$HOME\agent-ops" pull`, then re-run `setup.ps1` if the pull touched `skills/`. Skill updates reload without a restart. New projects get the new version.
+
+**Update an existing project**: it does not update itself; it is a copy of the kit as of its `/init-project`. Its `docs/status.md` records which version; a project made before that line existed matches its creation date against [CHANGELOG.md](CHANGELOG.md). Apply [UPGRADING.md](UPGRADING.md) from that version up, then start a new Claude Code session so changed roles load. Or ask Claude to do it.
+
+**Improve the kit**: when a project shows a new pattern or a gap in the method, record it there (`docs/lessons-learned.md`, or the closing `/cerebrate`). Once it holds two or three times, open an issue ([CONTRIBUTING.md](CONTRIBUTING.md)).
+
+**Uninstall**: delete the four skill folders under `~/.claude/skills/` and the file `~/.claude/agent-ops-home.txt`. A project built from the kit keeps working as plain files. To switch its hooks off, remove the `hooks` block from its `.claude/settings.json`; remove the `permissions` block to lift the write boundary. Cerbero's hooks, if you installed them, come out the way `skills/cerbero/setup-guide.md` put them in.
+
+<details>
+<summary><b>What is in the box</b></summary>
+
+| Path | What it is |
+|---|---|
+| `CLAUDE.md.template` | The `CLAUDE.md` each project instantiates (rules, routing, conventions; under 200 lines) |
+| `system/` | The method: orchestration, model and effort staffing, the review contract, research template, hook scripts |
+| `agents/` | Seven checked-in subagent definitions, each with its tools, model family and effort pinned |
+| `skills/` | `init-project`, `agent-dispatch`, `cerebrate`, `cerbero` |
+| `docs-seed/` | Seeds for each project's living docs (status, scratchpad, decisions, lessons, changelog) |
+| `setup.ps1` | Installs the skills at user level and records where the kit lives |
+| `maintenance/freshness/` | The master kit's weekly freshness run. Maintainer tooling, never copied into a project |
+| `CLAUDE.md` | The guide for maintaining the kit itself. Do not run a project from the clone: Claude would follow these instructions instead of a project's |
+
+</details>
+
+<details>
+<summary><b>If something breaks</b></summary>
+
+- **`setup.ps1` cannot be loaded / running scripts is disabled**: use the `powershell -NoProfile -ExecutionPolicy Bypass -File .\setup.ps1` form.
 - **`/init-project` does not appear**: run `setup.ps1` from the kit and, on a first install, restart Claude Code (close every window).
-- **"Agent type not found" right after `/init-project`**: start a new Claude Code session in the project; roles copied mid-session were not dispatchable in that session.
+- **"Agent type not found" right after `/init-project`**: start a new Claude Code session in the project. Roles copied mid-session were not dispatchable in that session (observed once, 2026-11-13; Claude Code v2.1.326 lists a fix, not yet re-tested).
 - **A commit is blocked by a "broken ref"**: the gate found a broken link in a doc. Fix the link.
 - **`check-docs.ps1` complains inside the kit itself**: expected. The kit holds seeds (`docs-seed/`), not living docs; the checker is built for an instantiated project.
 - **Hooks run another project's scripts**: the session was moved between folders and kept its original project path. Open a new session in the project.
-- **`EnterWorktree` is missing**: the write boundary removes it; see *The hooks*.
+- **`EnterWorktree` is missing**: the write boundary removes it; see the hooks above.
+
+</details>
+
+### Terms
+
+<details>
+<summary>Show the terms</summary>
+
+- **Instance**: a project created from the kit; a copy, not a link.
+- **Living docs**: `docs/status.md`, `decisions.md`, `lessons-learned.md` and the rest, which the agent keeps current.
+- **Orchestrator**: the main Claude Code session, the one that integrates and decides.
+- **Fan-out**: several subagents dispatched in parallel on parts of one question.
+- **Gate**: a check a change must pass before it ships.
+- **Effort**: Claude Code's reasoning-depth setting (`low` to `max`); the kit pins it per role.
+- **Configuration card**: the written answer to "how is this work organized", in `docs/status.md`.
+- **Hand-back**: a subagent's final report. **Closing lines**: the `CHECKED:` / `NOT CHECKED:` lines it must end with.
+- **Fable**: Anthropic's top model tier, above Opus. **Advisor**: `/advisor`, consulting a stronger model at decision points.
+- **Tier**: which roles a project gets (`core` 5, `build` 7).
+- **Domain kit** (`--domain`): an optional layer of extra folders and docs for one kind of work; none ships here.
+
+</details>
 
 ## License
 
