@@ -2,6 +2,10 @@
 
 Release notes for the kit itself, not for any project built from it. Dates are ISO. What an existing instance has to copy for each release is in [UPGRADING.md](UPGRADING.md). Versions before v0.10.0 were not published; their notes are kept short.
 
+## Unreleased
+
+- **`.gitignore`: hook error logs** (`outputs/fanouts/*.errors.log`). Exception text can carry local paths, and with them the user name; the usage and closing-lines logs stay committable (metadata only). An instance adds the same line.
+
 ## v0.11.0 - 2026-11-14
 
 Ported from the first instance run end to end (a research project, 2026-11-13/14). Every observation below comes from one machine and one Claude Code build, and is worded as observed.
